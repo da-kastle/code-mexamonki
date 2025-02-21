@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<title>Big Five Personality Test Results</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+    body { font-family: Arial, sans-serif; background-color: #F5F5F5; text-align: center; }
+    .container { max-width: 750px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+    .trait-box { margin-top: 20px; padding: 15px; border-radius: 5px; }
+    .extroversion { background-color: #22C122; }
+    .stability { background-color: #B22222; }
+    .agreeableness { background-color: #CD853F; }
+    .conscientiousness { background-color: #6A5ACD; }
+    .openness { background-color: #ADFF2F; }
+</style>
+</head>
+<body>
+    <div class="container">
+        <h2>Your Big Five Personality Test Results</h2>
+        <p>The table below shows your raw scores and percentile ranks.</p>
+        <div style="max-width:520px;margin:0 auto;">
+            <img width="100%" src="BIG5-graphic.php?EXT=3&EST=3&AGR=3&CSN=3&IIM=3" />
+        </div>
+        
+        <div class="trait-box extroversion">
+            <h3>Extroversion</h3>
+            <p>Score: <span id="ext-score"></span></p>
+            <p>Extraversion is characterized by sociability, enthusiasm, and assertiveness.</p>
+        </div>
+        <div class="trait-box stability">
+            <h3>Emotional Stability</h3>
+            <p>Score: <span id="est-score"></span></p>
+            <p>Emotional stability reflects resilience, calmness, and low negative emotions.</p>
+        </div>
+        <div class="trait-box agreeableness">
+            <h3>Agreeableness</h3>
+            <p>Score: <span id="agr-score"></span></p>
+            <p>Agreeableness indicates warmth, kindness, and a cooperative nature.</p>
+        </div>
+        <div class="trait-box conscientiousness">
+            <h3>Conscientiousness</h3>
+            <p>Score: <span id="csn-score"></span></p>
+            <p>Conscientiousness relates to organization, responsibility, and dependability.</p>
+        </div>
+        <div class="trait-box openness">
+            <h3>Openness to Experience</h3>
+            <p>Score: <span id="opn-score"></span></p>
+            <p>Openness includes creativity, intellectual curiosity, and a preference for novelty.</p>
+        </div>
+    </div>
+    
+    <script>
+        var urlParams = new URLSearchParams(window.location.search);
+        document.getElementById("ext-score").innerText = urlParams.get("EXT") || "N/A";
+        document.getElementById("est-score").innerText = urlParams.get("EST") || "N/A";
+        document.getElementById("agr-score").innerText = urlParams.get("AGR") || "N/A";
+        document.getElementById("csn-score").innerText = urlParams.get("CSN") || "N/A";
+        document.getElementById("opn-score").innerText = urlParams.get("OPN") || "N/A";
+    </script>
+</body>
+</html>
