@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Five Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script defer src="script.js"></script>
+</head>
+<body>
+
+    <header>
+        <h1>Big Five Personality Test</h1>
+    </header>
+
+    <main>
+        <h2 id="question-text"></h2>
+        <div class="button-container">
+            <button onclick="selectAnswer(1)">Disagree</button>
+            <button onclick="selectAnswer(2)">Slightly Disagree</button>
+            <button onclick="selectAnswer(3)">Neutral</button>
+            <button onclick="selectAnswer(4)">Slightly Agree</button>
+            <button onclick="selectAnswer(5)">Agree</button>
+        </div>
+        <p id="progress">Question <span id="current-question">1</span> of <span id="total-questions"></span></p>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Big Five Personality Test</p>
+    </footer>
+
+</body>
+</html>
