@@ -1,87 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>
-    body { font-family: Arial, sans-serif; background-color: #F5F5F5; text-align: center; }
-    .question-box { max-width: 500px; margin: auto; padding: 20px; background: white; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-    .ans_button { display: block; width: 100%; padding: 10px; margin: 5px 0; border: 2px solid #556B2F; background: #F0FFF0; cursor: pointer; }
-    .ans_button:hover { background: #E0EFE0; }
-    .skip_button, .undo_button { margin-top: 10px; padding: 5px 10px; cursor: pointer; border: none; background: #6A5ACD; color: white; border-radius: 5px; }
-    .undo_button { background: #556B2F; }
-</style>
-<script>
-var questions = {
-    'IND1': ['Carry out my plans.', 1],
-    'IND2': ['Finish what I start.', 1],
-    'IND3': ['Get things done quickly.', 1],
-    'IND4': ['Always know what I am doing.', 1],
-    'IND5': ['Waste my time.', -1],
-    'IND6': ['Find it difficult to get down to work.', -1],
-    'IND7': ['Mess things up.', -1],
-    'IND8': ['Don’t put my mind on the task at hand.', -1],
-    'IND9': ['Postpone decisions.', -1],
-    'IND10': ['Am easily distracted.', -1],
-    'ORD1': ['Like order.', 1],
-    'ORD2': ['Keep things tidy.', 1],
-    'ORD3': ['Follow a schedule.', 1],
-    'ORD4': ['Want everything to be "just right."', 1],
-    'ORD5': ['See that rules are observed.', 1],
-    'ORD6': ['Want every detail taken care of.', 1],
-    'ORD7': ['Leave my belongings around.', -1],
-    'ORD8': ['Am not bothered by messy people.', -1],
-    'ORD9': ['Am not bothered by disorder.', -1],
-    'ORD10': ['Dislike routine.', -1]
-};
-
-var questionOrder = Object.keys(questions);
-var index = 0;
-var responses = [];
-
-function showQuestion() {
-    document.getElementById("question").innerHTML = questions[questionOrder[index]][0];
-    document.getElementById("progress").innerText = (index + 1) + "/20";
-    document.getElementById("undo_button").style.display = index > 0 ? "inline-block" : "none";
-}
-
-function answer(selected) {
-    var score = questions[questionOrder[index]][1] === 1 ? selected : (6 - selected);
-    responses.push(score);
-    if (index < questionOrder.length - 1) {
-        index++;
-        showQuestion();
-    } else {
-        submitResults();
-    }
-}
-
-function undo() {
-    if (index > 0) {
-        responses.pop();
-        index--;
-        showQuestion();
-    }
-}
-
-function submitResults() {
-    var avgScore = responses.reduce((a, b) => a + b, 0) / responses.length;
-    alert("Your Conscientiousness Score: " + avgScore.toFixed(2));
-}
-
-window.onload = showQuestion;
-</script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Big Five Personality Test</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="question-box">
-        <h2 id="question"></h2>
-        <button class="ans_button" onclick="answer(1)">Disagree</button>
-        <button class="ans_button" onclick="answer(2)">Slightly Disagree</button>
-        <button class="ans_button" onclick="answer(3)">Neutral</button>
-        <button class="ans_button" onclick="answer(4)">Slightly Agree</button>
-        <button class="ans_button" onclick="answer(5)">Agree</button>
-        <br>
-        <button class="undo_button" id="undo_button" onclick="undo()" style="display:none;">&#8635; Previous</button>
-        <p id="progress">1/20</p>
-    </div>
+
+    <header>
+        <h1>Big Five Personality Test</h1>
+    </header>
+
+    <main>
+        <p>Discover your personality traits with this scientifically-backed test based on the Big Five personality model.</p>
+        <button onclick="startTest()">Begin Assessment</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Big Five Personality Test</p>
+    </footer>
+
+    <script>
+        function startTest() {
+            window.location.href = "test.html";
+        }
+    </script>
+
 </body>
 </html>
