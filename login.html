@@ -13,7 +13,7 @@
     </header>
 
     <main>
-        <button onclick="googleLogin()">Login with Google</button>
+        <button id="google-login">Login with Google</button>
     </main>
 
     <footer>
@@ -21,27 +21,37 @@
     </footer>
 
     <!-- Firebase SDK -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getAuth, signInWithPopup, GoogleAuthProvider } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
 
+    <script>
+        // 🔥 Firebase Config (Replace with Your Real Config)
         const firebaseConfig = {
-            apiKey: "AIzaSyAF-Vq2VA9xZIhn5Frz-yY_um0sLMM0JVc",
-            authDomain: "c-index.firebaseapp.com",
-            projectId: "c-index",
+            apiKey: "YOUR_API_KEY",
+            authDomain: "your-project-id.firebaseapp.com",
+            projectId: "your-project-id",
+            storageBucket: "your-project-id.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
         };
 
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-        const provider = new GoogleAuthProvider();
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const provider = new firebase.auth.GoogleAuthProvider();
 
-        window.googleLogin = function() {
-            signInWithPopup(auth, provider)
+        // Google Login Function
+        document.getElementById("google-login").addEventListener("click", () => {
+            auth.signInWithPopup(provider)
                 .then((result) => {
-                    window.location.href = "test.html"; // Redirect to test page after login
+                    console.log("Logged in:", result.user);
+                    window.location.href = "test.html"; // Redirect to test page
                 })
-                .catch((error) => console.error(error));
-        };
+                .catch((error) => {
+                    console.error("Login Error:", error.message);
+                    alert("Login failed. Check console for details.");
+                });
+        });
     </script>
 
 </body>
