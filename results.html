@@ -3,27 +3,62 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Test Results</title>
-    <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
+    <title>Your Conscientiousness Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+        .results-container {
+            max-width: 650px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .bar-container {
+            display: flex;
+            align-items: center;
+            margin: 15px 0;
+        }
+        .bar-label {
+            width: 150px;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .bar {
+            flex-grow: 1;
+            height: 30px;
+            background-color: #6A5ACD;
+            position: relative;
+            border-radius: 5px;
+        }
+        .bar-score {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: white;
+            font-weight: bold;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
 
-    <header>
-        <h1>Your Conscientiousness Results</h1>
-    </header>
-
-    <main>
-        <div class="results">
-            <p><strong>Industriousness:</strong> <span id="industriousness-score"></span></p>
-            <p><strong>Orderliness:</strong> <span id="orderliness-score"></span></p>
-        </div>
-        <button onclick="window.location.href='index.html'">Take Again</button>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 Conscientiousness Test</p>
-    </footer>
-
-</body>
-</html>
+<div class="results-container">
+    <h2>Your Conscientiousness Scores (Percentiles)</
