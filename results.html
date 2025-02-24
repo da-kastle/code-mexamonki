@@ -3,53 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Test Results</title>
+    <title>Your Test Results</title>
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
 </head>
 <body>
 
     <header>
-        <h1>Your Test Results</h1>
-        <button onclick="logout()">Logout</button>
+        <h1>Your Conscientiousness Results</h1>
     </header>
 
     <main>
-        <h2>Results Summary</h2>
-        <p id="user-info"></p>
-
         <div class="results">
-            <p><b>Industriousness:</b> <span id="industriousness-score"></span></p>
-            <p><b>Orderliness:</b> <span id="orderliness-score"></span></p>
+            <p><strong>Industriousness:</strong> <span id="industriousness-score"></span></p>
+            <p><strong>Orderliness:</strong> <span id="orderliness-score"></span></p>
         </div>
-
-        <button onclick="restartTest()">Take Again</button>
+        <button onclick="window.location.href='index.html'">Take Again</button>
     </main>
 
     <footer>
         <p>&copy; 2025 Conscientiousness Test</p>
     </footer>
-
-    <!-- Display User Info -->
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
-    <script>
-        const auth = firebase.auth();
-
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById("user-info").innerText = `Logged in as ${user.displayName} (${user.email})`;
-            } else {
-                window.location.href = "login.html";
-            }
-        });
-
-        // Logout function
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = "login.html";
-            });
-        }
-    </script>
 
 </body>
 </html>
