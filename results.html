@@ -8,21 +8,22 @@
         body {
             font-family: Arial, sans-serif;
             text-align: center;
-            background-color: #f9f9f9;
+            background-color: #f0f8ff;
             color: #333;
         }
         .results-container {
-            max-width: 650px;
-            margin: 50px auto;
+            width: 80%;
+            max-width: 700px;
+            margin: 40px auto;
             padding: 20px;
-            background-color: #fff;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             border-radius: 10px;
         }
         .bar-container {
             display: flex;
             align-items: center;
-            margin: 15px 0;
+            margin: 20px 0;
         }
         .bar-label {
             width: 150px;
@@ -30,28 +31,23 @@
             padding-right: 10px;
         }
         .bar {
-            flex-grow: 1;
-            height: 30px;
-            background-color: #6A5ACD;
+            height: 35px;
+            background-color: #4682B4;
+            color: #fff;
             position: relative;
+            text-align: right;
+            line-height: 35px;
+            padding-right: 10px;
             border-radius: 5px;
         }
-        .bar-score {
-            position: absolute;
-            right: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: white;
-            font-weight: bold;
-        }
         button {
-            padding: 10px 20px;
+            padding: 8px 15px;
             background-color: #4CAF50;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 25px;
         }
         button:hover {
             background-color: #45a049;
@@ -61,73 +57,67 @@
 <body>
 
 <div class="results-container">
-    <h2>Your Conscientiousness Scores (Percentiles)</h2>
+    <h2>Your Conscientiousness Scores</h2>
 
     <div class="bar-container">
         <div class="bar-label">Industriousness</div>
-        <div class="bar" id="industriousness-bar">
-            <span class="bar-score" id="industriousness-score"></span>
-        </div>
+        <div class="bar" id="industriousness-bar"></div>
     </div>
 
     <div class="bar-container">
         <div class="bar-label">Orderliness</div>
-        <div class="bar" id="orderliness-bar">
-            <span class="bar-score" id="orderliness-score"></span>
-        </div>
+        <div class="bar" id="orderliness-bar"></div>
     </div>
 
     <button onclick="window.location.href='index.html'">Retake Test</button>
 </div>
 
 <script>
-    // Norm data from the provided university sample
-    const normData = {
-        Industriousness: { mean: 2.84, sd: 0.70 },
-        Orderliness: { mean: 3.37, sd: 0.64 }
-    };
+const normData = {
+    Industriousness: { mean: 2.84, sd: 0.70 },
+    Orderliness: { mean: 3.37, sd: 0.64 }
+};
 
-    // Percentile calculation function
-    function calculatePercentile(score, mean, sd) {
-        const z = (score - mean) / sd;
-        const percentile = 0.5 * (1 + erf(z / Math.sqrt(2))) * 100;
-        return Math.round(percentile);
-    }
+function percentile(z) {
+    return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
+}
 
-    // Approximation of the error function
-    function erf(x) {
-        const sign = Math.sign(x);
-        x = Math.abs(x);
+function erf(x) {
+    let sign = Math.sign(x);
+    x = Math.abs(x);
+    let a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+    let t = 1 / (1 + p * x);
+    let y = 1 - ((((a5*t + a4)*t + a3)*t + a2)*t + a1) * Math.exp(-x*x);
+    return sign * y;
+}
 
-        const a1 =  0.254829592;
-        const a2 = -0.284496736;
-        const a3 =  1.421413741;
-        const a4 = -1.453152027;
-        const a5 =  1.061405429;
-        const p  =  0.3275911;
+// Get user's raw scores from URL
+const params = new URLSearchParams(window.location.search);
+const indScore = parseFloat(params.get("ind")) || normData.Industriousness.mean;
+const ordScore = parseFloat(params.get("ord")) || normData.Orderliness.mean;
 
-        const t = 1.0/(1.0 + p*x);
-        const y = 1.0 - ((((a5*t + a4)*t) + a3)*t + a2)*t*a1*Math.exp(-x*x);
+// Calculate z-scores
+const indZ = (indScore - normData.Industriousness.mean) / normData.Industriousness.sd;
+const ordZ = (ordScore - normData.Orderliness.mean) / normData.Orderliness.sd;
 
-        return sign*y;
-    }
+// Calculate percentiles
+const indPercentile = percentile(indZ);
+const ordPercentile = percentile(ordZ);
 
-    // Get user's raw scores from URL parameters
-    const params = new URLSearchParams(window.location.search);
-    const indScore = parseFloat(params.get("ind")) || normData.Industriousness.mean;
-    const ordScore = parseFloat(params.get("ord")) || normData.Orderliness.mean;
+// Adjust bars in increments of 0.05 SD
+function adjustBar(barId, zScore, percentile) {
+    let baseWidth = 50; // 50% width at z = 0
+    let width = baseWidth + (Math.round(zScore / 0.05) * 1); // 1% bar width per 0.05 SD increment
+    width = Math.min(Math.max(width, 10), 95); // Limit between 10% and 95%
 
-    // Calculate percentiles using norm data
-    const indPercentile = calculatePercentile(indScore, normData.Industriousness.mean, normData.Industriousness.sd);
-    const ordPercentile = calculatePercentile(ordScore, normData.Orderliness.mean, normData.Orderliness.sd);
+    const bar = document.getElementById(barId);
+    bar.style.width = width + '%';
+    bar.textContent = `${percentile}th percentile (z = ${zScore.toFixed(2)})`;
+}
 
-    // Display the calculated percentiles
-    document.getElementById("industriousness-score").innerText = indPercentile + 'th percentile';
-    document.getElementById("orderliness-score").innerText = ordPercentile + 'th percentile';
-
-    // Adjust the bar width to match percentile
-    document.getElementById("industriousness-bar").style.width = indPercentile + '%';
-    document.getElementById("orderliness-bar").style.width = ordPercentile + '%';
+// Update bars
+adjustBar("industriousness-bar", indZ, indPercentile);
+adjustBar("orderliness-bar", ordZ, ordPercentile);
 </script>
 
 </body>
