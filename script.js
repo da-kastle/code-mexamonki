@@ -1,11 +1,10 @@
+// Conscientiousness (20 items from DeYoung et al.)
 const questions = [
-    // Industriousness Questions (+ keyed)
+    // Industriousness
     { key: "IND1", text: "Carry out my plans.", positive: true },
     { key: "IND2", text: "Finish what I start.", positive: true },
     { key: "IND3", text: "Get things done quickly.", positive: true },
     { key: "IND4", text: "Always know what I am doing.", positive: true },
-    
-    // Industriousness Questions (- keyed)
     { key: "IND5", text: "Waste my time.", positive: false },
     { key: "IND6", text: "Find it difficult to get down to work.", positive: false },
     { key: "IND7", text: "Mess things up.", positive: false },
@@ -13,15 +12,13 @@ const questions = [
     { key: "IND9", text: "Postpone decisions.", positive: false },
     { key: "IND10", text: "Am easily distracted.", positive: false },
 
-    // Orderliness Questions (+ keyed)
+    // Orderliness
     { key: "ORD1", text: "Like order.", positive: true },
     { key: "ORD2", text: "Keep things tidy.", positive: true },
     { key: "ORD3", text: "Follow a schedule.", positive: true },
-    { key: "ORD4", text: "Want everything to be “just right.”", positive: true },
+    { key: "ORD4", text: "Want everything to be 'just right.'", positive: true },
     { key: "ORD5", text: "See that rules are observed.", positive: true },
     { key: "ORD6", text: "Want every detail taken care of.", positive: true },
-
-    // Orderliness Questions (- keyed)
     { key: "ORD7", text: "Leave my belongings around.", positive: false },
     { key: "ORD8", text: "Am not bothered by messy people.", positive: false },
     { key: "ORD9", text: "Am not bothered by disorder.", positive: false },
@@ -31,9 +28,10 @@ const questions = [
 let responses = {};
 let currentQuestionIndex = 0;
 
+// Answer selection and response recording
 function selectAnswer(value) {
-    let question = questions[currentQuestionIndex];
-    responses[question.key] = question.positive ? value : (6 - value);
+    const question = questions[currentQuestionIndex];
+    responses[question.key] = question.positive ? value : (6 - value); // reverse if negative
 
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
@@ -43,34 +41,45 @@ function selectAnswer(value) {
     }
 }
 
+// Update question text and progress dynamically
 function updateQuestion() {
     document.getElementById("question-text").innerText = questions[currentQuestionIndex].text;
     document.getElementById("current-question").innerText = currentQuestionIndex + 1;
     document.getElementById("total-questions").innerText = questions.length;
 }
 
+// Calculate averages and send scores to results.html
 function submitResults() {
-    let industriousnessScore = calculateAverage(Object.keys(responses).filter(k => k.startsWith("IND")).map(k => responses[k]));
-    let orderlinessScore = calculateAverage(Object.keys(responses).filter(k => k.startsWith("ORD")).map(k => responses[k]));
+    const indScores = Object.keys(responses)
+        .filter(k => k.startsWith("IND"))
+        .map(k => responses[k]);
 
-    let queryParams = `industriousness=${industriousnessScore}&orderliness=${orderlinessScore}`;
-    window.location.href = "results.html?" + queryParams;
+    const ordScores = Object.keys(responses)
+        .filter(k => k.startsWith("ORD"))
+        .map(k => responses[k]);
+
+    const indScore = average(indScores);
+    const ordScore = average(ordScores);
+
+    window.location.href = `results.html?ind=${indScore}&ord=${ordScore}`;
 }
 
-function calculateAverage(scores) {
-    return scores.reduce((a, b) => a + b, 0) / scores.length;
+// Calculate average of array
+function average(arr) {
+    return (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
 }
 
+// Display results on results.html (percentiles calculated separately)
 function displayResults() {
-    let params = new URLSearchParams(window.location.search);
-    document.getElementById("industriousness-score").innerText = params.get("industriousness") || "N/A";
-    document.getElementById("orderliness-score").innerText = params.get("orderliness") || "N/A";
+    const params = new URLSearchParams(window.location.search);
+    const indScore = params.get("ind") || "N/A";
+    const ordScore = params.get("ord") || "N/A";
+
+    document.getElementById("industriousness-score").innerText = indScore;
+    document.getElementById("orderliness-score").innerText = ordScore;
 }
 
-function restartTest() {
-    window.location.href = "index.html";
-}
-
+// Automatically update questions or results based on page
 if (window.location.pathname.includes("results.html")) {
     window.onload = displayResults;
 } else if (window.location.pathname.includes("test.html")) {
