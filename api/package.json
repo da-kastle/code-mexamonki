@@ -1,0 +1,9 @@
+{
+  "name": "conscientiousness-sync",
+  "version": "1.0.0",
+  "main": "api/sync.js",
+  "scripts": {
+    "start": "node api/sync.js"
+  },
+  "dependencies": {}
+}
