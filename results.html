@@ -1,75 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Your Conscientiousness Results</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background-color: #f0f8ff;
-      color: #333;
-    }
-    .results-container {
-      width: 80%;
-      max-width: 700px;
-      margin: 40px auto;
-      padding: 20px;
-      background: #fff;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-      border-radius: 10px;
-    }
-    .bar-container {
-      display: flex;
-      align-items: center;
-      margin: 20px 0;
-    }
-    .bar-label {
-      width: 150px;
-      text-align: right;
-      padding-right: 10px;
-    }
-    .bar {
-      height: 35px;
-      background-color: #4682b4;
-      color: #fff;
-      position: relative;
-      text-align: right;
-      line-height: 35px;
-      padding-right: 10px;
-      border-radius: 5px;
-    }
-    button {
-      padding: 8px 15px;
-      background-color: #4caf50;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin-top: 25px;
-    }
-    button:hover {
-      background-color: #45a049;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Conscientiousness Results</title>
 </head>
 <body>
-  <div class="results-container">
-    <h2>Your Conscientiousness Scores</h2>
-    <div class="bar-container">
-      <div class="bar-label">Industriousness</div>
-      <div class="bar" id="industriousness-bar"></div>
-    </div>
-    <div class="bar-container">
-      <div class="bar-label">Orderliness</div>
-      <div class="bar" id="orderliness-bar"></div>
-    </div>
-    <button onclick="window.location.href='index.html'">Retake Test</button>
-    <!-- Debug Sync Button -->
-    <button onclick="syncResults()">Sync Results</button>
-  </div>
+    <h2>Conscientiousness Results</h2>
+    <p>Industriousness: <span id="ind-score"></span></p>
+    <p>Orderliness: <span id="ord-score"></span></p>
+    <p>Overall Conscientiousness: <span id="cons-score"></span></p>
+    <canvas id="chart"></canvas>
+
+<script>
+const params = new URLSearchParams(window.location.search);
+const ind = parseFloat(params.get("ind"));
+const ord = parseFloat(params.get("ord"));
+const cons = parseFloat(params.get("cons"));
+
+const norm = { ind: { mean: 2.84, sd: 0.70, rel: 0.82 }, ord: { mean: 3.37, sd: 0.64, rel: 0.82 }, cons: { mean: 3.10, sd: 0.67, rel: 0.82 } };
+
+function calcZ(score, mean, sd) { return (score - mean) / sd; }
+function calcCI(z, sd, rel) { return 1.96 * (sd * Math.sqrt(1 - rel)); }
+
+const indZ = calcZ(ind, norm.ind.mean, norm.ind.sd);
+const ordZ = calcZ(ord, norm.ord.mean, norm.ord.sd);
+const consZ = calcZ(cons, norm.cons.mean, norm.cons.sd);
+
+document.getElementById("ind-score").innerText = `${indZ.toFixed(2)} ± ${calcCI(indZ, norm.ind.sd, norm.ind.rel).toFixed(2)}`;
+document.getElementById("ord-score").innerText = `${ordZ.toFixed(2)} ± ${calcCI(ordZ, norm.ord.sd, norm.ord.rel).toFixed(2)}`;
+document.getElementById("cons-score").innerText = `${consZ.toFixed(2)} ± ${calcCI(consZ, norm.cons.sd, norm.cons.rel).toFixed(2)}`;
+
+</script>
 </body>
 </html>
