@@ -1,6 +1,6 @@
 // script.js
 
-// Array of test questions (Conscientiousness – Industriousness and Orderliness)
+// Conscientiousness questions array
 const questions = [
   // Industriousness
   { key: "IND1", text: "Carry out my plans.", positive: true },
@@ -31,13 +31,15 @@ let currentQuestionIndex = 0;
 
 // Navigate to the test page
 function startTest() {
+  console.log("startTest called");
   window.location.href = "test.html";
 }
 
-// Record an answer; reverse score if the item is negatively keyed
+// Record an answer; reverse score if necessary
 function selectAnswer(value) {
   const question = questions[currentQuestionIndex];
   responses[question.key] = question.positive ? value : (6 - value);
+  console.log(`Answer recorded for ${question.key}:`, responses[question.key]);
 
   if (currentQuestionIndex < questions.length - 1) {
     currentQuestionIndex++;
@@ -47,68 +49,64 @@ function selectAnswer(value) {
   }
 }
 
-// Update the displayed question and progress information
+// Update the question display and progress
 function updateQuestion() {
-  document.getElementById("question-text").innerText =
-    questions[currentQuestionIndex].text;
-  document.getElementById("current-question").innerText =
-    currentQuestionIndex + 1;
+  document.getElementById("question-text").innerText = questions[currentQuestionIndex].text;
+  document.getElementById("current-question").innerText = currentQuestionIndex + 1;
   document.getElementById("total-questions").innerText = questions.length;
+  console.log(`Displaying question ${currentQuestionIndex + 1} of ${questions.length}`);
 }
 
-// Utility: calculate average of an array of numbers
+// Calculate average of an array
 function average(arr) {
   return (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
 }
 
-// When the test is complete, calculate subscale averages, store results, and redirect
+// Submit results: store data and redirect to results page
 function submitResults() {
-  const indScores = Object.keys(responses)
-    .filter((k) => k.startsWith("IND"))
-    .map((k) => responses[k]);
-  const ordScores = Object.keys(responses)
-    .filter((k) => k.startsWith("ORD"))
-    .map((k) => responses[k]);
-
+  const indScores = Object.keys(responses).filter(k => k.startsWith("IND")).map(k => responses[k]);
+  const ordScores = Object.keys(responses).filter(k => k.startsWith("ORD")).map(k => responses[k]);
   const indScore = average(indScores);
   const ordScore = average(ordScores);
 
-  // Save test results to localStorage for later syncing
   const testResults = {
     responses: responses,
     indScore: indScore,
     ordScore: ordScore,
     timestamp: new Date().toISOString(),
   };
+  console.log("Test complete, storing results:", testResults);
   localStorage.setItem("testResults", JSON.stringify(testResults));
-
   window.location.href = `results.html?ind=${indScore}&ord=${ordScore}`;
 }
 
-// Generic sync function that sends data to the backend
+// Generic sync function with debug logging
 async function syncData(data) {
+  console.log("syncData called with data:", data);
   try {
-    const response = await fetch("/api/sync", {
-      method: "POST",
+    const response = await fetch('/api/sync', {
+      method: 'POST',
       headers: {
-        "Content-Type": "application/json",
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
     });
+    console.log("Response received from /api/sync:", response);
     if (!response.ok) {
       throw new Error("Sync failed: " + response.statusText);
     }
     const result = await response.json();
-    console.log("Sync successful:", result);
+    console.log("Parsed JSON response:", result);
     return result;
   } catch (error) {
-    console.error("Error syncing data:", error);
+    console.error("Error in syncData:", error);
     return null;
   }
 }
 
-// Called from index.html to sync any locally stored test data
+// Sync function for index.html (sync local data)
 async function syncLocalData() {
+  console.log("syncLocalData triggered");
   const testResults = localStorage.getItem("testResults");
   if (testResults) {
     const data = JSON.parse(testResults);
@@ -123,8 +121,9 @@ async function syncLocalData() {
   }
 }
 
-// Optionally callable from results.html (does essentially the same thing)
+// Sync function for results.html (sync results data)
 async function syncResults() {
+  console.log("syncResults triggered");
   const testResults = localStorage.getItem("testResults");
   if (testResults) {
     const data = JSON.parse(testResults);
@@ -139,7 +138,7 @@ async function syncResults() {
   }
 }
 
-// Auto-run updateQuestion on the test page once loaded
+// If on test.html, automatically update question display on load
 if (window.location.pathname.includes("test.html")) {
   window.onload = updateQuestion;
 }
