@@ -61,7 +61,7 @@
         return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
     }
 
-    function calculateCI(z, sd, reliability) {
+    function calculateCI(sd, reliability) {
         return (1.96 * (sd * Math.sqrt(1 - reliability))).toFixed(2);
     }
 
@@ -90,9 +90,9 @@
     const ordPercentile = calculatePercentile(ordZ);
     const consPercentile = calculatePercentile(consZ);
 
-    const indCI = calculateCI(indZ, normData.Industriousness.sd, normData.Industriousness.reliability);
-    const ordCI = calculateCI(ordZ, normData.Orderliness.sd, normData.Orderliness.reliability);
-    const consCI = calculateCI(consZ, normData.Conscientiousness.sd, normData.Conscientiousness.reliability);
+    const indCI = calculateCI(normData.Industriousness.sd, normData.Industriousness.reliability);
+    const ordCI = calculateCI(normData.Orderliness.sd, normData.Orderliness.reliability);
+    const consCI = calculateCI(normData.Conscientiousness.sd, normData.Conscientiousness.reliability);
 
     // Update UI
     document.getElementById("ind-text").innerText = `${indPercentile}th percentile (z = ${indZ.toFixed(2)})`;
@@ -117,4 +117,13 @@
     // Display lowest-scoring items
     let lowestHTML = "";
     lowestItems.forEach(item => {
-        let item
+        let itemZ = calculateZ(item.score, normData.Conscientiousness.mean, normData.Conscientiousness.sd);
+        let itemPercentile = calculatePercentile(itemZ);
+        lowestHTML += `<li>${item.text}: ${item.score} (z = ${itemZ.toFixed(2)}, ${itemPercentile}th percentile)</li>`;
+    });
+
+    document.getElementById("lowest-items").innerHTML = lowestHTML;
+</script>
+
+</body>
+</html>
