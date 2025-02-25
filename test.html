@@ -1,32 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conscientiousness Assessment</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conscientiousness Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f8ff; color: #333; }
+        .container { max-width: 600px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        button { padding: 10px; margin: 5px; border: none; cursor: pointer; font-size: 16px; }
+        .nav-buttons { display: flex; justify-content: space-between; }
+        .back-btn { background-color: #d9534f; color: white; }
+        .next-btn { background-color: #4CAF50; color: white; }
+    </style>
 </head>
 <body>
-  <header>
-    <h1>Conscientiousness Assessment</h1>
-  </header>
-  <main>
+
+<div class="container">
     <h2 id="question-text"></h2>
-    <div class="button-container">
-      <button onclick="selectAnswer(1)">Disagree</button>
-      <button onclick="selectAnswer(2)">Slightly Disagree</button>
-      <button onclick="selectAnswer(3)">Neutral</button>
-      <button onclick="selectAnswer(4)">Slightly Agree</button>
-      <button onclick="selectAnswer(5)">Agree</button>
+    <div id="answers"></div>
+    <div class="nav-buttons">
+        <button class="back-btn" onclick="goBack()">← Go Back</button>
+        <button class="next-btn" onclick="nextQuestion()">Next →</button>
     </div>
-    <p id="progress">
-      Question <span id="current-question">1</span> of
-      <span id="total-questions"></span>
-    </p>
-  </main>
-  <footer>
-    <p>&copy; 2025 Conscientiousness Test</p>
-  </footer>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>
