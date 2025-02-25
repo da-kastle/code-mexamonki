@@ -4,33 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Conscientiousness Results</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f8ff; color: #333; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .bar-container { display: flex; align-items: center; margin: 20px 0; }
+        .bar-label { width: 200px; text-align: right; padding-right: 10px; font-weight: bold; }
+        .bar { height: 35px; position: relative; text-align: right; line-height: 35px; padding-right: 10px; border-radius: 5px; }
+        .bar-text { position: absolute; left: 10px; color: white; font-weight: bold; }
+        .error-bar { position: absolute; right: 10px; color: black; font-size: 12px; font-weight: bold; }
+        .industriousness { background-color: #ff8c00; } /* Orange */
+        .orderliness { background-color: #4682B4; } /* Steel Blue */
+        .conscientiousness { background-color: #5cb85c; } /* Green */
+        button { padding: 10px 15px; background-color: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer; margin-top: 25px; }
+        button:hover { background-color: #45a049; }
+    </style>
 </head>
 <body>
-    <h2>Conscientiousness Results</h2>
-    <p>Industriousness: <span id="ind-score"></span></p>
-    <p>Orderliness: <span id="ord-score"></span></p>
-    <p>Overall Conscientiousness: <span id="cons-score"></span></p>
-    <canvas id="chart"></canvas>
+
+<div class="container">
+    <h2>Your Conscientiousness Scores</h2>
+
+    <div class="bar-container">
+        <div class="bar-label">Industriousness</div>
+        <div class="bar industriousness" id="ind-bar"><span class="bar-text" id="ind-text"></span><span class="error-bar" id="ind-ci"></span></div>
+    </div>
+
+    <div class="bar-container">
+        <div class="bar-label">Orderliness</div>
+        <div class="bar orderliness" id="ord-bar"><span class="bar-text" id="ord-text"></span><span class="error-bar" id="ord-ci"></span></div>
+    </div>
+
+    <div class="bar-container">
+        <div class="bar-label">Conscientiousness</div>
+        <div class="bar conscientiousness" id="cons-bar"><span class="bar-text" id="cons-text"></span><span class="error-bar" id="cons-ci"></span></div>
+    </div>
+
+    <h3>Lowest-Scoring Items</h3>
+    <ul id="lowest-items"></ul>
+
+    <button onclick="window.location.href='index.html'">Retake Test</button>
+</div>
 
 <script>
-const params = new URLSearchParams(window.location.search);
-const ind = parseFloat(params.get("ind"));
-const ord = parseFloat(params.get("ord"));
-const cons = parseFloat(params.get("cons"));
+    // Normative data and test-retest reliabilities
+    const normData = {
+        Industriousness: { mean: 2.84, sd: 0.70, reliability: 0.82 },
+        Orderliness: { mean: 3.37, sd: 0.64, reliability: 0.82 },
+        Conscientiousness: { mean: 3.10, sd: 0.67, reliability: 0.82 }
+    };
 
-const norm = { ind: { mean: 2.84, sd: 0.70, rel: 0.82 }, ord: { mean: 3.37, sd: 0.64, rel: 0.82 }, cons: { mean: 3.10, sd: 0.67, rel: 0.82 } };
+    function calculateZ(score, mean, sd) {
+        return (score - mean) / sd;
+    }
 
-function calcZ(score, mean, sd) { return (score - mean) / sd; }
-function calcCI(z, sd, rel) { return 1.96 * (sd * Math.sqrt(1 - rel)); }
+    function calculatePercentile(z) {
+        return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
+    }
 
-const indZ = calcZ(ind, norm.ind.mean, norm.ind.sd);
-const ordZ = calcZ(ord, norm.ord.mean, norm.ord.sd);
-const consZ = calcZ(cons, norm.cons.mean, norm.cons.sd);
+    function calculateCI(z, sd, reliability) {
+        return (1.96 * (sd * Math.sqrt(1 - reliability))).toFixed(2);
+    }
 
-document.getElementById("ind-score").innerText = `${indZ.toFixed(2)} ± ${calcCI(indZ, norm.ind.sd, norm.ind.rel).toFixed(2)}`;
-document.getElementById("ord-score").innerText = `${ordZ.toFixed(2)} ± ${calcCI(ordZ, norm.ord.sd, norm.ord.rel).toFixed(2)}`;
-document.getElementById("cons-score").innerText = `${consZ.toFixed(2)} ± ${calcCI(consZ, norm.cons.sd, norm.cons.rel).toFixed(2)}`;
+    function erf(x) {
+        let sign = Math.sign(x);
+        x = Math.abs(x);
+        let a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+        let t = 1 / (1 + p * x);
+        let y = 1 - ((((a5*t + a4)*t + a3)*t + a2)*t*a1*Math.exp(-x*x));
+        return sign * y;
+    }
 
-</script>
-</body>
-</html>
+    // Get user's scores from URL
+    const params = new URLSearchParams(window.location.search);
+    const indScore = parseFloat(params.get("ind"));
+    const ordScore = parseFloat(params.get("ord"));
+    const consScore = parseFloat(params.get("cons"));
+    const lowestItems = JSON.parse(decodeURIComponent(params.get("lowest")));
+
+    // Compute z-scores, percentiles, and CIs
+    const indZ = calculateZ(indScore, normData.Industriousness.mean, normData.Industriousness.sd);
+    const ordZ = calculateZ(ordScore, normData.Orderliness.mean, normData.Orderliness.sd);
+    const consZ = calculateZ(consScore, normData.Conscientiousness.mean, normData.Conscientiousness.sd);
+
+    const indPercentile = calculatePercentile(indZ);
+    const ordPercentile = calculatePercentile(ordZ);
+    const consPercentile = calculatePercentile(consZ);
+
+    const indCI = calculateCI(indZ, normData.Industriousness.sd, normData.Industriousness.reliability);
+    const ordCI = calculateCI(ordZ, normData.Orderliness.sd, normData.Orderliness.reliability);
+    const consCI = calculateCI(consZ, normData.Conscientiousness.sd, normData.Conscientiousness.reliability);
+
+    // Update UI
+    document.getElementById("ind-text").innerText = `${indPercentile}th percentile (z = ${indZ.toFixed(2)})`;
+    document.getElementById("ord-text").innerText = `${ordPercentile}th percentile (z = ${ordZ.toFixed(2)})`;
+    document.getElementById("cons-text").innerText = `${consPercentile}th percentile (z = ${consZ.toFixed(2)})`;
+
+    document.getElementById("ind-ci").innerText = `± ${indCI}`;
+    document.getElementById("ord-ci").innerText = `± ${ordCI}`;
+    document.getElementById("cons-ci").innerText = `± ${consCI}`;
+
+    function adjustBar(barId, zScore) {
+        let baseWidth = 50; // 50% width at z = 0
+        let width = baseWidth + (zScore * 15);
+        width = Math.min(Math.max(width, 10), 95); // Limit bar width between 10% and 95%
+        document.getElementById(barId).style.width = width + '%';
+    }
+
+    adjustBar("ind-bar", indZ);
+    adjustBar("ord-bar", ordZ);
+    adjustBar("cons-bar", consZ);
+
+    // Display lowest-scoring items
+    let lowestHTML = "";
+    lowestItems.forEach(item => {
+        let item
