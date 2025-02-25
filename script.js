@@ -1,6 +1,5 @@
-// Full set of questions categorized with factor loadings
 const allQuestions = [
-    // Industriousness (Loadings from University Sample)
+    // Industriousness (Factor Loadings from University Sample)
     { key: "IND1", text: "Carry out my plans.", positive: true, loading: 0.54 },
     { key: "IND2", text: "Finish what I start.", positive: true, loading: 0.54 },
     { key: "IND3", text: "Get things done quickly.", positive: true, loading: 0.46 },
@@ -12,7 +11,7 @@ const allQuestions = [
     { key: "IND9", text: "Postpone decisions.", positive: false, loading: -0.51 },
     { key: "IND10", text: "Am easily distracted.", positive: false, loading: -0.53 },
 
-    // Orderliness (Loadings from University Sample)
+    // Orderliness (Factor Loadings from University Sample)
     { key: "ORD1", text: "Like order.", positive: true, loading: 0.56 },
     { key: "ORD2", text: "Keep things tidy.", positive: true, loading: 0.60 },
     { key: "ORD3", text: "Follow a schedule.", positive: true, loading: 0.54 },
