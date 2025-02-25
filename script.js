@@ -1,4 +1,4 @@
-// Original set of questions categorized into Industriousness & Orderliness
+// Full set of questions categorized
 const allQuestions = [
     // Industriousness
     { key: "IND1", text: "Carry out my plans.", positive: true },
@@ -25,7 +25,7 @@ const allQuestions = [
     { key: "ORD10", text: "Dislike routine.", positive: false },
 ];
 
-// Shuffle questions randomly while maintaining category tracking
+// Shuffle questions to randomize order
 function shuffleArray(array) {
     return array.sort(() => Math.random() - 0.5);
 }
@@ -36,26 +36,39 @@ const questions = shuffleArray([...allQuestions]);
 let responses = [];
 let currentIndex = 0;
 
-// Update the test interface with the current question
+// Likert scale options with colors
+const likertOptions = [
+    { value: 1, text: "Strongly Disagree", color: "#d9534f" },
+    { value: 2, text: "Disagree", color: "#f0ad4e" },
+    { value: 3, text: "Neutral", color: "#5bc0de" },
+    { value: 4, text: "Agree", color: "#5cb85c" },
+    { value: 5, text: "Strongly Agree", color: "#0275d8" }
+];
+
+// Update question display
 function updateQuestion() {
     document.getElementById("question-text").innerText = questions[currentIndex].text;
-    document.getElementById("answers").innerHTML = `
-        <button onclick="recordAnswer(1)">1</button>
-        <button onclick="recordAnswer(2)">2</button>
-        <button onclick="recordAnswer(3)">3</button>
-        <button onclick="recordAnswer(4)">4</button>
-        <button onclick="recordAnswer(5)">5</button>
-    `;
-    document.getElementById("progress").innerText = `Question ${currentIndex + 1} of ${questions.length}`;
+
+    // Render Likert buttons with colors
+    document.getElementById("answers").innerHTML = likertOptions.map(option =>
+        `<button onclick="recordAnswer(${option.value})" style="background-color: ${option.color}; color: white; padding: 10px; border-radius: 5px; margin: 5px;">
+            ${option.text}
+        </button>`
+    ).join("");
+
+    // Update progress bar
+    let progressPercent = ((currentIndex + 1) / questions.length) * 100;
+    document.getElementById("progress-bar").style.width = progressPercent + "%";
+    document.getElementById("progress-text").innerText = `Question ${currentIndex + 1} of ${questions.length}`;
 }
 
-// Store answer and move to next question
+// Store response and move to next question
 function recordAnswer(value) {
     responses[currentIndex] = questions[currentIndex].positive ? value : (6 - value); // Reverse if needed
     nextQuestion();
 }
 
-// Move to the next question
+// Move to next question
 function nextQuestion() {
     if (currentIndex < questions.length - 1) {
         currentIndex++;
@@ -89,10 +102,16 @@ function submitResults() {
     const ordMean = average(ordScores);
     const consMean = average(consScores);
 
-    window.location.href = `results.html?ind=${indMean}&ord=${ordMean}&cons=${consMean}&all=${JSON.stringify(responses)}`;
+    // Get the 3 lowest-scoring questions
+    let lowestScored = questions.map((q, index) => ({ text: q.text, score: responses[index] }))
+        .sort((a, b) => a.score - b.score)
+        .slice(0, 3);
+
+    // Redirect to results.html with all necessary data
+    window.location.href = `results.html?ind=${indMean}&ord=${ordMean}&cons=${consMean}&all=${JSON.stringify(responses)}&lowest=${encodeURIComponent(JSON.stringify(lowestScored))}`;
 }
 
-// Calculate the mean of an array
+// Calculate mean
 function average(arr) {
     return (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
 }
