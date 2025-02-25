@@ -1,4 +1,5 @@
-const questions = [
+// Original set of questions categorized into Industriousness & Orderliness
+const allQuestions = [
     // Industriousness
     { key: "IND1", text: "Carry out my plans.", positive: true },
     { key: "IND2", text: "Finish what I start.", positive: true },
@@ -23,6 +24,14 @@ const questions = [
     { key: "ORD9", text: "Am not bothered by disorder.", positive: false },
     { key: "ORD10", text: "Dislike routine.", positive: false },
 ];
+
+// Shuffle questions randomly while maintaining category tracking
+function shuffleArray(array) {
+    return array.sort(() => Math.random() - 0.5);
+}
+
+// Randomized questions array
+const questions = shuffleArray([...allQuestions]);
 
 let responses = [];
 let currentIndex = 0;
@@ -66,8 +75,14 @@ function goBack() {
 
 // Compute scores and navigate to results page
 function submitResults() {
-    const indScores = responses.slice(0, 10);
-    const ordScores = responses.slice(10, 20);
+    const indScores = questions
+        .filter(q => q.key.startsWith("IND"))
+        .map(q => responses[questions.indexOf(q)]);
+
+    const ordScores = questions
+        .filter(q => q.key.startsWith("ORD"))
+        .map(q => responses[questions.indexOf(q)]);
+
     const consScores = [...indScores, ...ordScores];
 
     const indMean = average(indScores);
