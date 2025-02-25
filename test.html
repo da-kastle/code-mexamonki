@@ -6,7 +6,67 @@
     <title>Conscientiousness Test</title>
     <style>
         body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f8ff; color: #333; }
+        .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 10px; box-sh<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conscientiousness Test</title>
+    <style>
+        body { font-family: Arial, sans-serif; text-align: center; background-color: #f0f8ff; color: #333; }
         .container { max-width: 700px; margin: 40px auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); }
+        .progress-container { width: 100%; background-color: #ddd; border-radius: 10px; margin-bottom: 20px; }
+        .progress-bar { height: 15px; background-color: #4CAF50; width: 0%; border-radius: 10px; transition: width 0.3s; }
+        .button-container { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
+        .likert-button {
+            width: 80%; 
+            max-width: 500px; 
+            padding: 12px; 
+            margin: 5px; 
+            border: none; 
+            color: white; 
+            background-color: #0275d8; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            text-align: center;
+        }
+        .likert-button:hover { background-color: #025aa5; }
+        .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
+        .back-btn, .next-btn {
+            background-color: #4CAF50; 
+            color: white; 
+            padding: 10px; 
+            border-radius: 5px; 
+            border: none; 
+            cursor: pointer;
+            width: 45%;
+        }
+        .back-btn:hover, .next-btn:hover { opacity: 0.8; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 id="question-text"></h2>
+
+    <div class="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <p id="progress-text"></p>
+
+    <div class="button-container" id="answers"></div>
+
+    <div class="nav-buttons">
+        <button class="back-btn" onclick="goBack()">← Go Back</button>
+        <button class="next-btn" onclick="nextQuestion()">Next →</button>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
+adow: 0 5px 15px rgba(0,0,0,0.1); }
         .progress-container { width: 100%; background-color: #ddd; border-radius: 10px; margin-bottom: 20px; }
         .progress-bar { height: 15px; background-color: #4CAF50; width: 0%; border-radius: 10px; transition: width 0.3s; }
         .button-container { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
