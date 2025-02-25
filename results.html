@@ -1,34 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conscientiousness Assessment</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Conscientiousness Results</title>
 </head>
 <body>
-  <header>
-    <h1>Conscientiousness Assessment</h1>
-  </header>
-  <main>
-    <!-- Container for displaying the current question -->
-    <h2 id="question-text"></h2>
-    <!-- Answer buttons -->
-    <div class="button-container">
-      <button onclick="selectAnswer(1)">Disagree</button>
-      <button onclick="selectAnswer(2)">Slightly Disagree</button>
-      <button onclick="selectAnswer(3)">Neutral</button>
-      <button onclick="selectAnswer(4)">Slightly Agree</button>
-      <button onclick="selectAnswer(5)">Agree</button>
-    </div>
-    <!-- Progress information -->
-    <p id="progress">
-      Question <span id="current-question">1</span> of <span id="total-questions">?</span>
-    </p>
-  </main>
-  <footer>
-    <p>&copy; 2025 Conscientiousness Test</p>
-  </footer>
+    <h2>Your Conscientiousness Scores</h2>
+    <p>Industriousness: <span id="ind-score"></span></p>
+    <p>Orderliness: <span id="ord-score"></span></p>
+    <p>Overall Conscientiousness: <span id="cons-score"></span></p>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const ind = parseFloat(params.get("ind"));
+    const ord = parseFloat(params.get("ord"));
+    const cons = parseFloat(params.get("cons"));
+
+    const norm = { ind: { mean: 2.84, sd: 0.70, rel: 0.82 }, ord: { mean: 3.37, sd: 0.64, rel: 0.82 }, cons: { mean: 3.10, sd: 0.67, rel: 0.82 } };
+
+    function calcZ(score, mean, sd) { return (score - mean) / sd; }
+    function calcCI(sd, rel) { return (1.96 * (sd * Math.sqrt(1 - rel))).toFixed(2); }
+
+    document.getElementById("ind-score").innerText = `${calcZ(ind, norm.ind.mean, norm.ind.sd).toFixed(2)} ± ${calcCI(norm.ind.sd, norm.ind.rel)}`;
+    document.getElementById("ord-score").innerText = `${calcZ(ord, norm.ord.mean, norm.ord.sd).toFixed(2)} ± ${calcCI(norm.ord.sd, norm.ord.rel)}`;
+    document.getElementById("cons-score").innerText = `${calcZ(cons, norm.cons.mean, norm.cons.sd).toFixed(2)} ± ${calcCI(norm.cons.sd, norm.cons.rel)}`;
+</script>
 </body>
 </html>
