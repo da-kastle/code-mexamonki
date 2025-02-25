@@ -10,15 +10,30 @@
         .progress-container { width: 100%; background-color: #ddd; border-radius: 10px; margin-bottom: 20px; }
         .progress-bar { height: 15px; background-color: #4CAF50; width: 0%; border-radius: 10px; transition: width 0.3s; }
         .button-container { display: flex; flex-direction: column; align-items: center; margin-top: 20px; }
-        .likert-button { width: 80%; padding: 12px; margin: 5px; border: none; color: white; border-radius: 5px; font-size: 16px; cursor: pointer; }
-        .strongly-disagree { background-color: #d9534f; } /* Red */
-        .disagree { background-color: #f0ad4e; } /* Orange */
-        .neutral { background-color: #5bc0de; } /* Blue */
-        .agree { background-color: #5cb85c; } /* Green */
-        .strongly-agree { background-color: #0275d8; } /* Dark Blue */
+        .likert-button {
+            width: 80%; 
+            max-width: 500px; 
+            padding: 12px; 
+            margin: 5px; 
+            border: none; 
+            color: white; 
+            background-color: #0275d8; 
+            border-radius: 5px; 
+            font-size: 16px; 
+            cursor: pointer; 
+            text-align: center;
+        }
+        .likert-button:hover { background-color: #025aa5; }
         .nav-buttons { display: flex; justify-content: space-between; margin-top: 20px; }
-        .back-btn { background-color: #d9534f; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer; }
-        .next-btn { background-color: #4CAF50; color: white; padding: 10px; border-radius: 5px; border: none; cursor: pointer; }
+        .back-btn, .next-btn {
+            background-color: #4CAF50; 
+            color: white; 
+            padding: 10px; 
+            border-radius: 5px; 
+            border: none; 
+            cursor: pointer;
+            width: 45%;
+        }
         .back-btn:hover, .next-btn:hover { opacity: 0.8; }
     </style>
 </head>
