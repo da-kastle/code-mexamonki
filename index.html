@@ -1,27 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Conscientiousness Test</title>
-  <link rel="stylesheet" href="style.css" />
-  <script defer src="script.js"></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conscientiousness Test</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <h1>Conscientiousness Test</h1>
-  </header>
-  <main>
-    <p>
-      This test measures your level of Conscientiousness, broken into two
-      subcategories: Industriousness and Orderliness.
-    </p>
-    <button onclick="startTest()">Begin Assessment</button>
-    <!-- Debug Sync Button on the landing page -->
-    <button onclick="syncLocalData()">Sync Data</button>
-  </main>
-  <footer>
-    <p>&copy; 2025 Conscientiousness Test</p>
-  </footer>
+
+    <header>
+        <h1>Conscientiousness Test</h1>
+    </header>
+
+    <main>
+        <p>This test measures your level of Conscientiousness, broken into two subcategories: Industriousness and Orderliness.</p>
+        <button onclick="startTest()">Begin Assessment</button>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Conscientiousness Test</p>
+    </footer>
+
+    <script>
+        function startTest() {
+            window.location.href = "test.html";
+        }
+    </script>
+
 </body>
 </html>
