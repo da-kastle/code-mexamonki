@@ -4,27 +4,121 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Your Conscientiousness Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f8ff;
+            color: #333;
+        }
+        .results-container {
+            width: 80%;
+            max-width: 700px;
+            margin: 40px auto;
+            padding: 20px;
+            background: #fff;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+        .bar-container {
+            display: flex;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .bar-label {
+            width: 150px;
+            text-align: right;
+            padding-right: 10px;
+        }
+        .bar {
+            height: 35px;
+            background-color: #4682B4;
+            color: #fff;
+            position: relative;
+            text-align: right;
+            line-height: 35px;
+            padding-right: 10px;
+            border-radius: 5px;
+        }
+        button {
+            padding: 8px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 25px;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
+
+<div class="results-container">
     <h2>Your Conscientiousness Scores</h2>
-    <p>Industriousness: <span id="ind-score"></span></p>
-    <p>Orderliness: <span id="ord-score"></span></p>
-    <p>Overall Conscientiousness: <span id="cons-score"></span></p>
+
+    <div class="bar-container">
+        <div class="bar-label">Industriousness</div>
+        <div class="bar" id="industriousness-bar"></div>
+    </div>
+
+    <div class="bar-container">
+        <div class="bar-label">Orderliness</div>
+        <div class="bar" id="orderliness-bar"></div>
+    </div>
+
+    <button onclick="window.location.href='index.html'">Retake Test</button>
+</div>
 
 <script>
-    const params = new URLSearchParams(window.location.search);
-    const ind = parseFloat(params.get("ind"));
-    const ord = parseFloat(params.get("ord"));
-    const cons = parseFloat(params.get("cons"));
+const normData = {
+    Industriousness: { mean: 2.84, sd: 0.70 },
+    Orderliness: { mean: 3.37, sd: 0.64 }
+};
 
-    const norm = { ind: { mean: 2.84, sd: 0.70, rel: 0.82 }, ord: { mean: 3.37, sd: 0.64, rel: 0.82 }, cons: { mean: 3.10, sd: 0.67, rel: 0.82 } };
+function percentile(z) {
+    return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
+}
 
-    function calcZ(score, mean, sd) { return (score - mean) / sd; }
-    function calcCI(sd, rel) { return (1.96 * (sd * Math.sqrt(1 - rel))).toFixed(2); }
+function erf(x) {
+    let sign = Math.sign(x);
+    x = Math.abs(x);
+    let a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
+    let t = 1 / (1 + p * x);
+    let y = 1 - ((((a5*t + a4)*t + a3)*t + a2)*t + a1) * Math.exp(-x*x);
+    return sign * y;
+}
 
-    document.getElementById("ind-score").innerText = `${calcZ(ind, norm.ind.mean, norm.ind.sd).toFixed(2)} ± ${calcCI(norm.ind.sd, norm.ind.rel)}`;
-    document.getElementById("ord-score").innerText = `${calcZ(ord, norm.ord.mean, norm.ord.sd).toFixed(2)} ± ${calcCI(norm.ord.sd, norm.ord.rel)}`;
-    document.getElementById("cons-score").innerText = `${calcZ(cons, norm.cons.mean, norm.cons.sd).toFixed(2)} ± ${calcCI(norm.cons.sd, norm.cons.rel)}`;
+// Get user's raw scores from URL
+const params = new URLSearchParams(window.location.search);
+const indScore = parseFloat(params.get("ind")) || normData.Industriousness.mean;
+const ordScore = parseFloat(params.get("ord")) || normData.Orderliness.mean;
+
+// Calculate z-scores
+const indZ = (indScore - normData.Industriousness.mean) / normData.Industriousness.sd;
+const ordZ = (ordScore - normData.Orderliness.mean) / normData.Orderliness.sd;
+
+// Calculate percentiles
+const indPercentile = percentile(indZ);
+const ordPercentile = percentile(ordZ);
+
+// Adjust bars in increments of 0.05 SD
+function adjustBar(barId, zScore, percentile) {
+    let baseWidth = 50; // 50% width at z = 0
+    let width = baseWidth + (Math.round(zScore / 0.05) * 1); // 1% bar width per 0.05 SD increment
+    width = Math.min(Math.max(width, 10), 95); // Limit between 10% and 95%
+
+    const bar = document.getElementById(barId);
+    bar.style.width = width + '%';
+    bar.textContent = `${percentile}th percentile (z = ${zScore.toFixed(2)})`;
+}
+
+// Update bars
+adjustBar("industriousness-bar", indZ, indPercentile);
+adjustBar("orderliness-bar", ordZ, ordPercentile);
 </script>
+
 </body>
 </html>
