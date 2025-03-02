@@ -1,9 +1,9 @@
-<!DOCTYPE html>
+<!DOCTYPE html> 
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Conscientiousness Results</title>
+    <title>Your Extraversion Results</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -57,16 +57,16 @@
 <body>
 
 <div class="results-container">
-    <h2>Your Conscientiousness Scores</h2>
+    <h2>Your Extraversion Scores</h2>
 
     <div class="bar-container">
-        <div class="bar-label">Industriousness</div>
-        <div class="bar" id="industriousness-bar"></div>
+        <div class="bar-label">Enthusiasm</div>
+        <div class="bar" id="enthusiasm-bar"></div>
     </div>
 
     <div class="bar-container">
-        <div class="bar-label">Orderliness</div>
-        <div class="bar" id="orderliness-bar"></div>
+        <div class="bar-label">Assertiveness</div>
+        <div class="bar" id="assertiveness-bar"></div>
     </div>
 
     <button onclick="window.location.href='index.html'">Retake Test</button>
@@ -74,8 +74,8 @@
 
 <script>
 const normData = {
-    Industriousness: { mean: 2.84, sd: 0.70 },
-    Orderliness: { mean: 3.37, sd: 0.64 }
+    Enthusiasm: { mean: 3.52, sd: 0.73 },
+    Assertiveness: { mean: 3.39, sd: 0.67 }
 };
 
 function percentile(z) {
@@ -93,16 +93,16 @@ function erf(x) {
 
 // Get user's raw scores from URL
 const params = new URLSearchParams(window.location.search);
-const indScore = parseFloat(params.get("ind")) || normData.Industriousness.mean;
-const ordScore = parseFloat(params.get("ord")) || normData.Orderliness.mean;
+const entScore = parseFloat(params.get("ent")) || normData.Enthusiasm.mean;
+const assScore = parseFloat(params.get("ass")) || normData.Assertiveness.mean;
 
 // Calculate z-scores
-const indZ = (indScore - normData.Industriousness.mean) / normData.Industriousness.sd;
-const ordZ = (ordScore - normData.Orderliness.mean) / normData.Orderliness.sd;
+const entZ = (entScore - normData.Enthusiasm.mean) / normData.Enthusiasm.sd;
+const assZ = (assScore - normData.Assertiveness.mean) / normData.Assertiveness.sd;
 
 // Calculate percentiles
-const indPercentile = percentile(indZ);
-const ordPercentile = percentile(ordZ);
+const entPercentile = percentile(entZ);
+const assPercentile = percentile(assZ);
 
 // Adjust bars in increments of 0.05 SD
 function adjustBar(barId, zScore, percentile) {
@@ -116,8 +116,8 @@ function adjustBar(barId, zScore, percentile) {
 }
 
 // Update bars
-adjustBar("industriousness-bar", indZ, indPercentile);
-adjustBar("orderliness-bar", ordZ, ordPercentile);
+adjustBar("enthusiasm-bar", entZ, entPercentile);
+adjustBar("assertiveness-bar", assZ, assPercentile);
 </script>
 
 </body>
