@@ -80,8 +80,8 @@ function displayResults() {
 }
 
 // Automatically update questions or results based on page
-if (window.location.pathname.includes("results.html")) {
+if (window.location.pathname.includes("c-results.html")) {
     window.onload = displayResults;
-} else if (window.location.pathname.includes("test.html")) {
+} else if (window.location.pathname.includes("c-test.html")) {
     window.onload = updateQuestion;
 }
