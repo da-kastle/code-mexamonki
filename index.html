@@ -9,12 +9,15 @@
 <body>
 
     <header>
-        <h1>Conscientiousness Test</h1>
+        <h1>Personality Test</h1>
     </header>
 
     <main>
         <p>This test measures your level of Conscientiousness, broken into two subcategories: Industriousness and Orderliness.</p>
-        <button onclick="startTest()">Begin Assessment</button>
+        <button onclick="startTest_C()">Begin Assessment</button>
+        
+        <p>This test measures your level of Extraverstion, broken into two subcategories: Enthusiasm and Assertiveness</p>
+        <button onclick="startTest_E()">Begin Assessment</button>
     </main>
 
     <footer>
@@ -22,8 +25,13 @@
     </footer>
 
     <script>
-        function startTest() {
-            window.location.href = "test.html";
+        function startTest_C() {
+            window.location.href = "test_C.html";
+        }
+    </script>
+    <script>
+        function startTest_C() {
+            window.location.href = "test_E.html";
         }
     </script>
 
