@@ -60,7 +60,7 @@ function submitResults() {
     const entScore = average(entScores);
     const assScore = average(assScores);
 
-    window.location.href = `results.html?ent=${entScore}&ass=${assScore}`;
+    window.location.href = `e-results.html?ent=${entScore}&ass=${assScore}`;
 }
 
 // Calculate average of array
