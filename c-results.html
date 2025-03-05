@@ -31,19 +31,19 @@
             padding-right: 10px;
         }
         .bar {
-            height: 35px;
+            height: auto; /* Allow bar to expand in height if needed */
             background-color: #4682B4;
             color: #fff;
-            position: relative;
-            text-align: center; /* Center text for better visibility */
-            line-height: 35px;
-            padding: 0 5px; /* Reduce excessive padding */
+            text-align: center; /* Center text */
+            line-height: normal; /* Allow multi-line text */
+            padding: 8px; /* Add padding for better spacing */
             border-radius: 5px;
-            white-space: nowrap; /* Prevent text from breaking into new lines */
-            overflow: hidden;
-            text-overflow: ellipsis;
-            font-size: clamp(12px, 4vw, 16px); /* Responsive font size */
-            min-width: 50px; /* Ensure bars remain readable at small widths */
+            display: flex; /* Use flexbox for better content positioning */
+            align-items: center; /* Center text vertically */
+            justify-content: center; /* Center text horizontally */
+            white-space: normal; /* Allow text to wrap */
+            word-break: break-word; /* Ensure long words wrap properly */
+            min-height: 35px; /* Ensure a minimum height */
         }
         button {
             padding: 8px 15px;
