@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Conscientiousness Test</title>
+    <title>Test Root</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -18,6 +18,9 @@
         
         <p>This test measures your level of Extraverstion, broken into two subcategories: Enthusiasm and Assertiveness</p>
         <button onclick="startTest_E()">Begin Assessment</button>
+
+        <p>This test measures your level of Neuroticism, broken into two subcategories: Volatility and Withdrawal</p>
+        <button onclick="startTest_N()">Begin Assessment</button>
     </main>
 
     <footer>
@@ -34,6 +37,11 @@
             window.location.href = "test_E.html";
         }
     </script>
-
+    
+     <script>
+        function startTest_N() {
+            window.location.href = "test_N.html";
+        }
+    </script>
 </body>
 </html>
