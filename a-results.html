@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Personality Results</title>
+    <title>Your Agreeableness Results</title>
     <style> 
         body {
             font-family: Arial, sans-serif;
@@ -31,14 +31,19 @@
             padding-right: 10px;
         }
         .bar {
-            height: 35px;
+            height: auto; /* Allow bar to expand in height if needed */
             background-color: #4682B4;
             color: #fff;
-            position: relative;
-            text-align: right;
-            line-height: 35px;
-            padding-right: 10%;
+            text-align: center; /* Center text */
+            line-height: normal; /* Allow multi-line text */
+            padding: 8px; /* Add padding for better spacing */
             border-radius: 5px;
+            display: flex; /* Use flexbox for better content positioning */
+            align-items: center; /* Center text vertically */
+            justify-content: center; /* Center text horizontally */
+            white-space: normal; /* Allow text to wrap */
+            word-break: break-word; /* Ensure long words wrap properly */
+            min-height: 35px; /* Ensure a minimum height */
         }
         button {
             padding: 8px 15px;
@@ -57,7 +62,7 @@
 <body>
 
 <div class="results-container">
-    <h2>Your Personality Scores</h2>
+    <h2>Your Agreeableness Scores</h2>
 
     <div class="bar-container">
         <div class="bar-label">Compassion</div>
@@ -74,7 +79,6 @@
 
 <script>
 const normData = {
-    Agreeableness: { mean: 3.52, sd: 0.67 },
     Compassion: { mean: 3.87, sd: 0.65 },
     Politeness: { mean: 3.52, sd: 0.67 }
 };
@@ -94,17 +98,14 @@ function erf(x) {
 
 // Get user's raw scores from URL
 const params = new URLSearchParams(window.location.search);
-const agrScore = parseFloat(params.get("agr")) || normData.Agreeableness.mean;
 const compScore = parseFloat(params.get("comp")) || normData.Compassion.mean;
 const polScore = parseFloat(params.get("pol")) || normData.Politeness.mean;
 
 // Calculate z-scores
-const agrZ = (agrScore - normData.Agreeableness.mean) / normData.Agreeableness.sd;
 const compZ = (compScore - normData.Compassion.mean) / normData.Compassion.sd;
 const polZ = (polScore - normData.Politeness.mean) / normData.Politeness.sd;
 
 // Calculate percentiles
-const agrPercentile = percentile(agrZ);
 const compPercentile = percentile(compZ);
 const polPercentile = percentile(polZ);
 
@@ -120,7 +121,6 @@ function adjustBar(barId, zScore, percentile) {
 }
 
 // Update bars
-adjustBar("agreeableness-bar", agrZ, agrPercentile);
 adjustBar("compassion-bar", compZ, compPercentile);
 adjustBar("politeness-bar", polZ, polPercentile);
 </script>
