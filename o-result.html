@@ -31,14 +31,19 @@
             padding-right: 10px;
         }
         .bar {
-            height: 35px;
+            height: auto; /* Allow bar to expand in height if needed */
             background-color: #4682B4;
             color: #fff;
-            position: relative;
-            text-align: right;
-            line-height: 35px;
-            padding-right: 10%;
+            text-align: center; /* Center text */
+            line-height: normal; /* Allow multi-line text */
+            padding: 8px; /* Add padding for better spacing */
             border-radius: 5px;
+            display: flex; /* Use flexbox for better content positioning */
+            align-items: center; /* Center text vertically */
+            justify-content: center; /* Center text horizontally */
+            white-space: normal; /* Allow text to wrap */
+            word-break: break-word; /* Ensure long words wrap properly */
+            min-height: 35px; /* Ensure a minimum height */
         }
         button {
             padding: 8px 15px;
@@ -60,11 +65,6 @@
     <h2>Your Personality Scores</h2>
 
     <div class="bar-container">
-        <div class="bar-label">Openness</div>
-        <div class="bar" id="openness-bar"></div>
-    </div>
-
-    <div class="bar-container">
         <div class="bar-label">Intellect</div>
         <div class="bar" id="intellect-bar"></div>
     </div>
@@ -79,7 +79,6 @@
 
 <script>
 const normData = {
-    Openness: { mean: 3.52, sd: 0.64 },
     Intellect: { mean: 3.39, sd: 0.67 },
     Aesthetics: { mean: 3.52, sd: 0.64 }
 };
@@ -99,17 +98,14 @@ function erf(x) {
 
 // Get user's raw scores from URL
 const params = new URLSearchParams(window.location.search);
-const opennessScore = parseFloat(params.get("opn")) || normData.Openness.mean;
 const intellectScore = parseFloat(params.get("int")) || normData.Intellect.mean;
 const aestheticsScore = parseFloat(params.get("aes")) || normData.Aesthetics.mean;
 
 // Calculate z-scores
-const opennessZ = (opennessScore - normData.Openness.mean) / normData.Openness.sd;
 const intellectZ = (intellectScore - normData.Intellect.mean) / normData.Intellect.sd;
 const aestheticsZ = (aestheticsScore - normData.Aesthetics.mean) / normData.Aesthetics.sd;
 
 // Calculate percentiles
-const opennessPercentile = percentile(opennessZ);
 const intellectPercentile = percentile(intellectZ);
 const aestheticsPercentile = percentile(aestheticsZ);
 
@@ -125,7 +121,6 @@ function adjustBar(barId, zScore, percentile) {
 }
 
 // Update bars
-adjustBar("openness-bar", opennessZ, opennessPercentile);
 adjustBar("intellect-bar", intellectZ, intellectPercentile);
 adjustBar("aesthetics-bar", aestheticsZ, aestheticsPercentile);
 </script>
