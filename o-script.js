@@ -60,7 +60,7 @@ function submitResults() {
     const intellectScore = average(intellectScores);
     const opennessScore = average(opennessScores);
 
-    window.location.href = `a-results.html?int=${intellectScore}&open=${opennessScore}`;
+    window.location.href = `o-results.html?int=${intellectScore}&open=${opennessScore}`;
 }
 
 // Calculate average of array
