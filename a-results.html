@@ -1,140 +1,74 @@
-<!DOCTYPE html>
-<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Your Agreeableness Results</title>
-    <style> 
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f0f8ff;
-            color: #333;
-        }
-        .results-container {
-            width: 80%;
-            max-width: 700px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #fff;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            border-radius: 10px;
-        }
-        .bar-container {
-            display: flex;
-            align-items: center;
-            margin: 20px 0;
-        }
-        .bar-label {
-            width: 150px;
-            text-align: right;
-            padding-right: 10px;
-        }
-        .bar {
-            height: 35px;
-            background-color: #4682B4;
-            color: #fff;
-            text-align: center;
-            padding: 8px;
-            border-radius: 5px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            white-space: nowrap;
-            min-width: 10%;
-            max-width: 100%;
-        }
-        button {
-            padding: 8px 15px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            margin-top: 25px;
-        }
-        button:hover {
-            background-color: #45a049;
-        }
-    </style>
-</head>
-<body>
-
-<div class="results-container">
-    <h2>Your Agreeableness Scores</h2>
-
-    <div class="bar-container">
-        <div class="bar-label">Compassion</div>
-        <div class="bar" id="compassion-bar"></div>
-    </div>
-
-    <div class="bar-container">
-        <div class="bar-label">Politeness</div>
-        <div class="bar" id="politeness-bar"></div>
-    </div>
-
-    <button onclick="window.location.href='index.html'">Retake Test</button>
-</div>
-
-<script>
-// Standardized Norm Data
-const normData = {
-    Compassion: { mean: 3.87, sd: 0.65 },
-    Politeness: { mean: 3.52, sd: 0.67 }
-};
-
-// Error Function Approximation
-function erf(x) {
-    const a1 =  0.254829592;
-    const a2 = -0.284496736;
-    const a3 =  1.421413741;
-    const a4 = -1.453152027;
-    const a5 =  1.061405429;
-    const p  =  0.3275911;
-    
-    let sign = Math.sign(x);
-    x = Math.abs(x);
-    
-    let t = 1 / (1 + p * x);
-    let y = 1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t) * Math.exp(-x * x);
-    
-    return sign * y;
-}
-
-// Convert z-score to percentile
-function percentile(z) {
-    return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
-}
-
-// Get user scores from URL
-const params = new URLSearchParams(window.location.search);
-const compScore = parseFloat(params.get("comp"));
-const polScore = parseFloat(params.get("pol"));
-
-// Fallback to norm mean if values are missing or invalid
-const compFinalScore = isNaN(compScore) ? normData.Compassion.mean : compScore;
-const polFinalScore = isNaN(polScore) ? normData.Politeness.mean : polScore;
-
-// Calculate z-scores
-const compZ = (compFinalScore - normData.Compassion.mean) / normData.Compassion.sd;
-const polZ = (polFinalScore - normData.Politeness.mean) / normData.Politeness.sd;
-
-// Calculate percentiles
-const compPercentile = percentile(compZ);
-const polPercentile = percentile(polZ);
-
-// Function to update bars dynamically
-function adjustBar(barId, percentile) {
-    let width = Math.max(10, Math.min(percentile, 100)); // Limit between 10% and 100%
-    const bar = document.getElementById(barId);
-    bar.style.width = width + '%';
-    bar.textContent = `${percentile}th percentile`;
-}
-
-// Update the UI bars
-adjustBar("compassion-bar", compPercentile);
-adjustBar("politeness-bar", polPercentile);
-</script>
-
-</body>
-</html>
+     <meta charset="UTF-8">
+     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     <title>Your Personality Results</title>
+     <title>Your Agreeableness Results</title>
+     <style> 
+         body {
+             font-family: Arial, sans-serif;
+             padding-right: 10px;
+         }
+         .bar {
+             height: 35px;
+             height: auto; /* Allow bar to expand in height if needed */
+             background-color: #4682B4;
+             color: #fff;
+             position: relative;
+             text-align: right;
+             line-height: 35px;
+             padding-right: 10%;
+             text-align: center; /* Center text */
+             line-height: normal; /* Allow multi-line text */
+             padding: 8px; /* Add padding for better spacing */
+             border-radius: 5px;
+             display: flex; /* Use flexbox for better content positioning */
+             align-items: center; /* Center text vertically */
+             justify-content: center; /* Center text horizontally */
+             white-space: normal; /* Allow text to wrap */
+             word-break: break-word; /* Ensure long words wrap properly */
+             min-height: 35px; /* Ensure a minimum height */
+         }
+         button {
+             padding: 8px 15px;
+ <body>
+ 
+ <div class="results-container">
+     <h2>Your Personality Scores</h2>
+     <h2>Your Agreeableness Scores</h2>
+ 
+     <div class="bar-container">
+         <div class="bar-label">Compassion</div>
+ 
+ <script>
+ const normData = {
+     Agreeableness: { mean: 3.52, sd: 0.67 },
+     Compassion: { mean: 3.87, sd: 0.65 },
+     Politeness: { mean: 3.52, sd: 0.67 }
+ };
+ 
+ // Get user's raw scores from URL
+ const params = new URLSearchParams(window.location.search);
+ const agrScore = parseFloat(params.get("agr")) || normData.Agreeableness.mean;
+ const compScore = parseFloat(params.get("comp")) || normData.Compassion.mean;
+ const polScore = parseFloat(params.get("pol")) || normData.Politeness.mean;
+ 
+ // Calculate z-scores
+ const agrZ = (agrScore - normData.Agreeableness.mean) / normData.Agreeableness.sd;
+ const compZ = (compScore - normData.Compassion.mean) / normData.Compassion.sd;
+ const polZ = (polScore - normData.Politeness.mean) / normData.Politeness.sd;
+ 
+ // Calculate percentiles
+ const agrPercentile = percentile(agrZ);
+ const compPercentile = percentile(compZ);
+ const polPercentile = percentile(polZ);
+ 
+ }
+ 
+ // Update bars
+ adjustBar("agreeableness-bar", agrZ, agrPercentile);
+ adjustBar("compassion-bar", compZ, compPercentile);
+ adjustBar("politeness-bar", polZ, polPercentile);
+ </script>
+ 
+ </body>
+ </html>
