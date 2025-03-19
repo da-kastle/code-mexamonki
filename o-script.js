@@ -12,16 +12,16 @@ const questions = [
     { key: "INT10", text: "Formulate ideas clearly.", positive: true },
 
     // Openness
-    { key: "OPEN1", text: "Enjoy the beauty of nature.", positive: true },
-    { key: "OPEN2", text: "Believe in the importance of art.", positive: true },
-    { key: "OPEN3", text: "Love to reflect on things.", positive: true },
-    { key: "OPEN4", text: "Get deeply immersed in music.", positive: true },
-    { key: "OPEN5", text: "Do not like poetry.", positive: false },
-    { key: "OPEN6", text: "See beauty in things that others might not notice.", positive: true },
-    { key: "OPEN7", text: "Need a creative outlet.", positive: true },
-    { key: "OPEN8", text: "Seldom get lost in thought.", positive: false },
-    { key: "OPEN9", text: "Seldom daydream.", positive: false },
-    { key: "OPEN10", text: "Seldom notice the emotional aspects of paintings and pictures.", positive: false },
+    { key: "AES1", text: "Enjoy the beauty of nature.", positive: true },
+    { key: "AES2", text: "Believe in the importance of art.", positive: true },
+    { key: "AES3", text: "Love to reflect on things.", positive: true },
+    { key: "AES4", text: "Get deeply immersed in music.", positive: true },
+    { key: "AES5", text: "Do not like poetry.", positive: false },
+    { key: "AES6", text: "See beauty in things that others might not notice.", positive: true },
+    { key: "AES7", text: "Need a creative outlet.", positive: true },
+    { key: "AES8", text: "Seldom get lost in thought.", positive: false },
+    { key: "AES9", text: "Seldom daydream.", positive: false },
+    { key: "AES10", text: "Seldom notice the emotional aspects of paintings and pictures.", positive: false },
 ];
 
 let responses = {};
@@ -54,7 +54,7 @@ function submitResults() {
         .map(k => responses[k]);
 
     const aestheticsScores = Object.keys(responses)
-        .filter(k => k.startsWith("OPEN"))
+        .filter(k => k.startsWith("AES"))
         .map(k => responses[k]);
 
     const intellectScore = average(intellectScores);
@@ -72,7 +72,7 @@ function average(arr) {
 function displayResults() {
     const params = new URLSearchParams(window.location.search);
     const intellectScore = params.get("int") || "N/A";
-    const aestheticsScore = params.get("open") || "N/A";
+    const aestheticsScore = params.get("aes") || "N/A";
 
     document.getElementById("intellect-score").innerText = intellectScore;
     document.getElementById("aesthetics-score").innerText = aestheticsScore;
