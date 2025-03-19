@@ -31,19 +31,18 @@
             padding-right: 10px;
         }
         .bar {
-            height: auto;
+            height: 35px;
             background-color: #4682B4;
             color: #fff;
             text-align: center;
-            line-height: normal;
             padding: 8px;
             border-radius: 5px;
             display: flex;
             align-items: center;
             justify-content: center;
-            white-space: normal;
-            word-break: break-word;
-            min-height: 35px;
+            white-space: nowrap;
+            min-width: 10%;
+            max-width: 100%;
         }
         button {
             padding: 8px 15px;
@@ -78,60 +77,63 @@
 </div>
 
 <script>
+// Standardized Norm Data
 const normData = {
     Compassion: { mean: 3.87, sd: 0.65 },
     Politeness: { mean: 3.52, sd: 0.67 }
 };
 
-function percentile(z) {
-    return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
-}
-
+// Error Function Approximation
 function erf(x) {
-    // Constants for improved approximation
     const a1 =  0.254829592;
     const a2 = -0.284496736;
     const a3 =  1.421413741;
     const a4 = -1.453152027;
     const a5 =  1.061405429;
     const p  =  0.3275911;
-
+    
     let sign = Math.sign(x);
     x = Math.abs(x);
-
+    
     let t = 1 / (1 + p * x);
     let y = 1 - (((((a5 * t + a4) * t + a3) * t + a2) * t + a1) * t) * Math.exp(-x * x);
-
+    
     return sign * y;
 }
 
-// Get user's raw scores from URL parameters
+// Convert z-score to percentile
+function percentile(z) {
+    return Math.round(0.5 * (1 + erf(z / Math.sqrt(2))) * 100);
+}
+
+// Get user scores from URL
 const params = new URLSearchParams(window.location.search);
-const compScore = parseFloat(params.get("comp")) || normData.Compassion.mean;
-const polScore = parseFloat(params.get("pol")) || normData.Politeness.mean;
+const compScore = parseFloat(params.get("comp"));
+const polScore = parseFloat(params.get("pol"));
+
+// Fallback to norm mean if values are missing or invalid
+const compFinalScore = isNaN(compScore) ? normData.Compassion.mean : compScore;
+const polFinalScore = isNaN(polScore) ? normData.Politeness.mean : polScore;
 
 // Calculate z-scores
-const compZ = (compScore - normData.Compassion.mean) / normData.Compassion.sd;
-const polZ = (polScore - normData.Politeness.mean) / normData.Politeness.sd;
+const compZ = (compFinalScore - normData.Compassion.mean) / normData.Compassion.sd;
+const polZ = (polFinalScore - normData.Politeness.mean) / normData.Politeness.sd;
 
 // Calculate percentiles
 const compPercentile = percentile(compZ);
 const polPercentile = percentile(polZ);
 
-// Adjust bars to reflect percentiles
-function adjustBar(barId, zScore, percentile) {
-    let baseWidth = 50; // 50% width at z = 0
-    let width = baseWidth + (Math.round(zScore / 0.05) * 1); // 1% bar width per 0.05 SD increment
-    width = Math.min(Math.max(width, 10), 95); // Limit between 10% and 95%
-
+// Function to update bars dynamically
+function adjustBar(barId, percentile) {
+    let width = Math.max(10, Math.min(percentile, 100)); // Limit between 10% and 100%
     const bar = document.getElementById(barId);
     bar.style.width = width + '%';
-    bar.textContent = `${percentile}th percentile (z = ${zScore.toFixed(2)})`;
+    bar.textContent = `${percentile}th percentile`;
 }
 
-// Update bars with computed values
-adjustBar("compassion-bar", compZ, compPercentile);
-adjustBar("politeness-bar", polZ, polPercentile);
+// Update the UI bars
+adjustBar("compassion-bar", compPercentile);
+adjustBar("politeness-bar", polPercentile);
 </script>
 
 </body>
