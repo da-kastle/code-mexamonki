@@ -53,14 +53,14 @@ function submitResults() {
         .filter(k => k.startsWith("INT"))
         .map(k => responses[k]);
 
-    const opennessScores = Object.keys(responses)
+    const aestheticsScores = Object.keys(responses)
         .filter(k => k.startsWith("OPEN"))
         .map(k => responses[k]);
 
     const intellectScore = average(intellectScores);
-    const opennessScore = average(opennessScores);
+    const aestheticsScore = average(aestheticsScores);
 
-    window.location.href = `o-results.html?int=${intellectScore}&open=${opennessScore}`;
+    window.location.href = `o-results.html?int=${intellectScore}&open=${aestheticsScore}`;
 }
 
 // Calculate average of array
@@ -72,10 +72,10 @@ function average(arr) {
 function displayResults() {
     const params = new URLSearchParams(window.location.search);
     const intellectScore = params.get("int") || "N/A";
-    const opennessScore = params.get("open") || "N/A";
+    const aestheticsScore = params.get("open") || "N/A";
 
     document.getElementById("intellect-score").innerText = intellectScore;
-    document.getElementById("openness-score").innerText = opennessScore;
+    document.getElementById("aesthetics-score").innerText = aestheticsScore;
 }
 
 // Automatically update questions or results based on page
