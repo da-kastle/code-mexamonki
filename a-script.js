@@ -30,7 +30,7 @@ let currentQuestionIndex = 0;
 // Handles answer selection and stores responses
 function selectAnswer(value) {
     const question = questions[currentQuestionIndex];
-    
+
     // Reverse score if negative (R-coded) item
     responses[question.key] = question.positive ? value : (6 - value);
 
@@ -49,28 +49,26 @@ function updateQuestion() {
     document.getElementById("total-questions").innerText = questions.length;
 }
 
-// Calculates weighted averages using factor loadings and correct normalization
+// Calculates properly normalized scores using factor loadings
 function submitResults() {
-    const compResults = questions
-        .filter(q => q.key.startsWith("COMP"))
-        .map(q => responses[q.key] * q.loading);
+    const compResults = questions.filter(q => q.key.startsWith("COMP"));
+    const polResults = questions.filter(q => q.key.startsWith("POL"));
 
-    const polResults = questions
-        .filter(q => q.key.startsWith("POL"))
-        .map(q => responses[q.key] * q.loading);
-
-    const compScore = normalizedScore(compResults, 10);
-    const polScore = normalizedScore(polResults, 10);
+    const compScore = normalizedScore(compResults);
+    const polScore = normalizedScore(polResults);
 
     window.location.href = `a-results.html?comp=${compScore}&pol=${polScore}`;
 }
 
-// Computes the properly normalized weighted score
-function normalizedScore(scores, numItems) {
-    if (scores.length === 0) return "N/A";
+// Computes the correctly normalized weighted score
+function normalizedScore(items) {
+    if (items.length === 0) return "N/A";
 
-    const sumWeightedScores = scores.reduce((sum, val) => sum + val, 0);
-    return (sumWeightedScores / Math.sqrt(numItems)).toFixed(2);
+    const numItems = items.length;
+    const sumWeightedScores = items.reduce((sum, q) => sum + (responses[q.key] * q.loading), 0);
+    const sumLoadings = items.reduce((sum, q) => sum + Math.abs(q.loading), 0);
+
+    return (sumWeightedScores / (Math.sqrt(numItems) * sumLoadings)).toFixed(2);
 }
 
 // Displays the results on the results page
