@@ -1,31 +1,28 @@
 const questions = [
     // Compassion
-    { key: "COMP1", text: "Am not interested in other people’s problems.", positive: false },
-    { key: "COMP2", text: "Feel others’ emotions.", positive: true },
-    { key: "COMP3", text: "Inquire about others’ well-being.", positive: true },
-    { key: "COMP4", text: "Can’t be bothered with other’s needs.", positive: false },
-    { key: "COMP5", text: "Sympathize with others’ feelings.", positive: true },
-    { key: "COMP6", text: "Am indifferent to the feelings of others.", positive: false },
-    { key: "COMP7", text: "Take no time for others.", positive: false },
-    { key: "COMP8", text: "Take an interest in other people’s lives.", positive: true },
-    { key: "COMP9", text: "Don’t have a soft side.", positive: false },
-    { key: "COMP10", text: "Like to do things for others.", positive: true },
+    { key: "COMP1", text: "Am not interested in other people’s problems.", positive: false, loading: -0.50 },
+    { key: "COMP2", text: "Feel others’ emotions.", positive: true, loading: 0.60 },
+    { key: "COMP3", text: "Inquire about others’ well-being.", positive: true, loading: 0.62 },
+    { key: "COMP4", text: "Can’t be bothered with other’s needs.", positive: false, loading: -0.65 },
+    { key: "COMP5", text: "Sympathize with others’ feelings.", positive: true, loading: 0.72 },
+    { key: "COMP6", text: "Am indifferent to the feelings of others.", positive: false, loading: -0.51 },
+    { key: "COMP7", text: "Take no time for others.", positive: false, loading: -0.59 },
+    { key: "COMP8", text: "Take an interest in other people’s lives.", positive: true, loading: 0.70 },
+    { key: "COMP9", text: "Don’t have a soft side.", positive: false, loading: -0.47 },
+    { key: "COMP10", text: "Like to do things for others.", positive: true, loading: 0.60 },
 
     // Politeness
-    { key: "POL1", text: "Respect authority.", positive: true },
-    { key: "POL2", text: "Insult people.", positive: false },
-    { key: "POL3", text: "Hate to seem pushy.", positive: true },
-    { key: "POL4", text: "Believe that I am better than others.", positive: false },
-    { key: "POL5", text: "Avoid imposing my will on others.", positive: true },
-    { key: "POL6", text: "Rarely put people under pressure.", positive: true },
-    { key: "POL7", text: "Take advantage of others.", positive: false },
-    { key: "POL8", text: "Seek conflict.", positive: false },
-    { key: "POL9", text: "Love a good fight.", positive: false },
-    { key: "POL10", text: "Am out for my own personal gain.", positive: false },
+    { key: "POL1", text: "Respect authority.", positive: true, loading: 0.33 },
+    { key: "POL2", text: "Insult people.", positive: false, loading: -0.58 },
+    { key: "POL3", text: "Hate to seem pushy.", positive: true, loading: 0.42 },
+    { key: "POL4", text: "Believe that I am better than others.", positive: false, loading: -0.51 },
+    { key: "POL5", text: "Avoid imposing my will on others.", positive: true, loading: 0.55 },
+    { key: "POL6", text: "Rarely put people under pressure.", positive: true, loading: 0.46 },
+    { key: "POL7", text: "Take advantage of others.", positive: false, loading: -0.49 },
+    { key: "POL8", text: "Seek conflict.", positive: false, loading: -0.52 },
+    { key: "POL9", text: "Love a good fight.", positive: false, loading: -0.54 },
+    { key: "POL10", text: "Am out for my own personal gain.", positive: false, loading: -0.50 },
 ];
-
-let responses = {};
-let currentQuestionIndex = 0;
 
 // Answer selection and response recording
 function selectAnswer(value) {
@@ -47,25 +44,26 @@ function updateQuestion() {
     document.getElementById("total-questions").innerText = questions.length;
 }
 
-// Calculate averages and send scores to results.html
+// Calculate weighted averages and send scores to results.html
 function submitResults() {
-    const compScores = Object.keys(responses)
-        .filter(k => k.startsWith("COMP"))
-        .map(k => responses[k]);
+    const compScores = questions
+        .filter(q => q.key.startsWith("COMP"))
+        .map(q => responses[q.key] * q.loading); // Apply factor loading
 
-    const polScores = Object.keys(responses)
-        .filter(k => k.startsWith("POL"))
-        .map(k => responses[k]);
+    const polScores = questions
+        .filter(q => q.key.startsWith("POL"))
+        .map(q => responses[q.key] * q.loading); // Apply factor loading
 
-    const compScore = average(compScores);
-    const polScore = average(polScores);
+    const compScore = weightedAverage(compScores);
+    const polScore = weightedAverage(polScores);
 
     window.location.href = `a-results.html?comp=${compScore}&pol=${polScore}`;
 }
 
-// Calculate average of array
-function average(arr) {
-    return (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
+// Calculate weighted average
+function weightedAverage(arr) {
+    const totalWeight = arr.reduce((sum, val) => sum + Math.abs(val), 0);
+    return (arr.reduce((sum, val) => sum + val, 0) / totalWeight).toFixed(2);
 }
 
 // Display results on results.html
