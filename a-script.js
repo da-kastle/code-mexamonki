@@ -49,7 +49,7 @@ function updateQuestion() {
     document.getElementById("total-questions").innerText = questions.length;
 }
 
-// Calculates weighted averages using factor loadings and sends results
+// Calculates weighted averages using factor loadings and correct normalization
 function submitResults() {
     const compResults = questions
         .filter(q => q.key.startsWith("COMP"))
@@ -59,20 +59,18 @@ function submitResults() {
         .filter(q => q.key.startsWith("POL"))
         .map(q => responses[q.key] * q.loading);
 
-    const compScore = weightedAverage(compResults);
-    const polScore = weightedAverage(polResults);
+    const compScore = normalizedScore(compResults, 10);
+    const polScore = normalizedScore(polResults, 10);
 
     window.location.href = `a-results.html?comp=${compScore}&pol=${polScore}`;
 }
 
-// Computes the weighted average score
-function weightedAverage(scores) {
+// Computes the properly normalized weighted score
+function normalizedScore(scores, numItems) {
     if (scores.length === 0) return "N/A";
-    
-    const sumWeightedScores = scores.reduce((sum, val) => sum + val, 0);
-    const sumWeights = scores.reduce((sum, val) => sum + Math.abs(val), 0);
 
-    return (sumWeightedScores / sumWeights).toFixed(2);
+    const sumWeightedScores = scores.reduce((sum, val) => sum + val, 0);
+    return (sumWeightedScores / Math.sqrt(numItems)).toFixed(2);
 }
 
 // Displays the results on the results page
