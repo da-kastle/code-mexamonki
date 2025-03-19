@@ -31,19 +31,17 @@
             padding-right: 10px;
         }
         .bar {
-            height: auto; /* Allow bar to expand in height if needed */
+            height: 35px;
             background-color: #4682B4;
             color: #fff;
-            text-align: center; /* Center text */
-            line-height: normal; /* Allow multi-line text */
-            padding: 8px; /* Add padding for better spacing */
+            text-align: center;
+            line-height: 35px;
+            padding: 8px;
             border-radius: 5px;
-            display: flex; /* Use flexbox for better content positioning */
-            align-items: center; /* Center text vertically */
-            justify-content: center; /* Center text horizontally */
-            white-space: normal; /* Allow text to wrap */
-            word-break: break-word; /* Ensure long words wrap properly */
-            min-height: 35px; /* Ensure a minimum height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            white-space: nowrap;
         }
         button {
             padding: 8px 15px;
@@ -90,37 +88,27 @@ function percentile(z) {
 function erf(x) {
     let sign = Math.sign(x);
     x = Math.abs(x);
-    let a1 = 0.254829592, a2 = -0.284496736, a3 = 1.421413741, a4 = -1.453152027, a5 = 1.061405429, p = 0.3275911;
-    let t = 1 / (1 + p * x);
-    let y = 1 - ((((a5*t + a4)*t + a3)*t + a2)*t + a1) * Math.exp(-x*x);
+    let t = 1 / (1 + 0.3275911 * x);
+    let y = 1 - (((((1.061405429*t - 1.453152027)*t + 1.421413741)*t - 0.284496736)*t + 0.254829592)*t) * Math.exp(-x*x);
     return sign * y;
 }
 
-// Get user's raw scores from URL
 const params = new URLSearchParams(window.location.search);
 const intellectScore = parseFloat(params.get("int")) || normData.Intellect.mean;
-const aestheticsScore = parseFloat(params.get("aes")) || normData.Aesthetics.mean;
+const aestheticsScore = parseFloat(params.get("aesthetics")) || normData.Aesthetics.mean;
 
-// Calculate z-scores
 const intellectZ = (intellectScore - normData.Intellect.mean) / normData.Intellect.sd;
 const aestheticsZ = (aestheticsScore - normData.Aesthetics.mean) / normData.Aesthetics.sd;
 
-// Calculate percentiles
 const intellectPercentile = percentile(intellectZ);
 const aestheticsPercentile = percentile(aestheticsZ);
 
-// Adjust bars in increments of 0.05 SD
 function adjustBar(barId, zScore, percentile) {
-    let baseWidth = 50; // 50% width at z = 0
-    let width = baseWidth + (Math.round(zScore / 0.05) * 1); // 1% bar width per 0.05 SD increment
-    width = Math.min(Math.max(width, 10), 95); // Limit between 10% and 95%
-
-    const bar = document.getElementById(barId);
-    bar.style.width = width + '%';
-    bar.textContent = `${percentile}th percentile (z = ${zScore.toFixed(2)})`;
+    let width = Math.min(Math.max(50 + (zScore * 10), 10), 95);
+    document.getElementById(barId).style.width = width + '%';
+    document.getElementById(barId).textContent = `${percentile}th percentile (z = ${zScore.toFixed(2)})`;
 }
 
-// Update bars
 adjustBar("intellect-bar", intellectZ, intellectPercentile);
 adjustBar("aesthetics-bar", aestheticsZ, aestheticsPercentile);
 </script>
