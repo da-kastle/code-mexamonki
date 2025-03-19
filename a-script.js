@@ -64,11 +64,10 @@ function submitResults() {
 function normalizedScore(items) {
     if (items.length === 0) return "N/A";
 
-    const numItems = items.length;
     const sumWeightedScores = items.reduce((sum, q) => sum + (responses[q.key] * q.loading), 0);
     const sumLoadings = items.reduce((sum, q) => sum + Math.abs(q.loading), 0);
 
-    return (sumWeightedScores / (Math.sqrt(numItems) * sumLoadings)).toFixed(2);
+    return (sumWeightedScores / sumLoadings).toFixed(2);
 }
 
 // Displays the results on the results page
