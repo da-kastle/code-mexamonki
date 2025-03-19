@@ -30,6 +30,7 @@
          }
          button {
              padding: 8px 15px;
+         }
  <body>
  
  <div class="results-container">
@@ -41,31 +42,27 @@
  
  <script>
  const normData = {
-     Agreeableness: { mean: 3.52, sd: 0.67 },
      Compassion: { mean: 3.87, sd: 0.65 },
      Politeness: { mean: 3.52, sd: 0.67 }
  };
  
  // Get user's raw scores from URL
  const params = new URLSearchParams(window.location.search);
- const agrScore = parseFloat(params.get("agr")) || normData.Agreeableness.mean;
+          
  const compScore = parseFloat(params.get("comp")) || normData.Compassion.mean;
  const polScore = parseFloat(params.get("pol")) || normData.Politeness.mean;
  
- // Calculate z-scores
- const agrZ = (agrScore - normData.Agreeableness.mean) / normData.Agreeableness.sd;
+ // Calculate z-scores;
  const compZ = (compScore - normData.Compassion.mean) / normData.Compassion.sd;
  const polZ = (polScore - normData.Politeness.mean) / normData.Politeness.sd;
  
- // Calculate percentiles
- const agrPercentile = percentile(agrZ);
+ // Calculate percentiles;
  const compPercentile = percentile(compZ);
  const polPercentile = percentile(polZ);
  
  }
  
- // Update bars
- adjustBar("agreeableness-bar", agrZ, agrPercentile);
+ // Update bars;
  adjustBar("compassion-bar", compZ, compPercentile);
  adjustBar("politeness-bar", polZ, polPercentile);
  </script>
