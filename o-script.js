@@ -60,7 +60,7 @@ function submitResults() {
     const intellectScore = average(intellectScores);
     const aestheticsScore = average(aestheticsScores);
 
-    window.location.href = `o-results.html?int=${intellectScore}&open=${aestheticsScore}`;
+    window.location.href = `o-results.html?int=${intellectScore}&aesthetics=${aestheticsScore}`;
 }
 
 // Calculate average of array
