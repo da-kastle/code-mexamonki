@@ -24,10 +24,15 @@ const questions = [
     { key: "POL10", text: "Am out for my own personal gain.", positive: false, loading: -0.50 },
 ];
 
-// Answer selection and response recording
+let responses = {};
+let currentQuestionIndex = 0;
+
+// Handles answer selection and stores responses
 function selectAnswer(value) {
     const question = questions[currentQuestionIndex];
-    responses[question.key] = question.positive ? value : (6 - value); // Reverse score if negative
+    
+    // Reverse score if negative (R-coded) item
+    responses[question.key] = question.positive ? value : (6 - value);
 
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
@@ -37,36 +42,40 @@ function selectAnswer(value) {
     }
 }
 
-// Update question text and progress dynamically
+// Updates the displayed question and progress
 function updateQuestion() {
     document.getElementById("question-text").innerText = questions[currentQuestionIndex].text;
     document.getElementById("current-question").innerText = currentQuestionIndex + 1;
     document.getElementById("total-questions").innerText = questions.length;
 }
 
-// Calculate weighted averages and send scores to results.html
+// Calculates weighted averages using factor loadings and sends results
 function submitResults() {
-    const compScores = questions
+    const compResults = questions
         .filter(q => q.key.startsWith("COMP"))
-        .map(q => responses[q.key] * q.loading); // Apply factor loading
+        .map(q => responses[q.key] * q.loading);
 
-    const polScores = questions
+    const polResults = questions
         .filter(q => q.key.startsWith("POL"))
-        .map(q => responses[q.key] * q.loading); // Apply factor loading
+        .map(q => responses[q.key] * q.loading);
 
-    const compScore = weightedAverage(compScores);
-    const polScore = weightedAverage(polScores);
+    const compScore = weightedAverage(compResults);
+    const polScore = weightedAverage(polResults);
 
     window.location.href = `a-results.html?comp=${compScore}&pol=${polScore}`;
 }
 
-// Calculate weighted average
-function weightedAverage(arr) {
-    const totalWeight = arr.reduce((sum, val) => sum + Math.abs(val), 0);
-    return (arr.reduce((sum, val) => sum + val, 0) / totalWeight).toFixed(2);
+// Computes the weighted average score
+function weightedAverage(scores) {
+    if (scores.length === 0) return "N/A";
+    
+    const sumWeightedScores = scores.reduce((sum, val) => sum + val, 0);
+    const sumWeights = scores.reduce((sum, val) => sum + Math.abs(val), 0);
+
+    return (sumWeightedScores / sumWeights).toFixed(2);
 }
 
-// Display results on results.html
+// Displays the results on the results page
 function displayResults() {
     const params = new URLSearchParams(window.location.search);
     const compScore = params.get("comp") || "N/A";
@@ -76,7 +85,7 @@ function displayResults() {
     document.getElementById("politeness-score").innerText = polScore;
 }
 
-// Automatically update questions or results based on page
+// Auto-update question or results based on the page
 if (window.location.pathname.includes("a-results.html")) {
     window.onload = displayResults;
 } else if (window.location.pathname.includes("test_A.html")) {
