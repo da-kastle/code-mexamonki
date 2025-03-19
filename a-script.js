@@ -1,38 +1,36 @@
 const questions = [
     // Compassion
-    { key: "COMP1", text: "Am not interested in other people’s problems.", positive: false, loading: -0.50 },
-    { key: "COMP2", text: "Feel others’ emotions.", positive: true, loading: 0.60 },
-    { key: "COMP3", text: "Inquire about others’ well-being.", positive: true, loading: 0.62 },
-    { key: "COMP4", text: "Can’t be bothered with other’s needs.", positive: false, loading: -0.65 },
-    { key: "COMP5", text: "Sympathize with others’ feelings.", positive: true, loading: 0.72 },
-    { key: "COMP6", text: "Am indifferent to the feelings of others.", positive: false, loading: -0.51 },
-    { key: "COMP7", text: "Take no time for others.", positive: false, loading: -0.59 },
-    { key: "COMP8", text: "Take an interest in other people’s lives.", positive: true, loading: 0.70 },
-    { key: "COMP9", text: "Don’t have a soft side.", positive: false, loading: -0.47 },
-    { key: "COMP10", text: "Like to do things for others.", positive: true, loading: 0.60 },
+    { key: "COMP1", text: "Am not interested in other people’s problems.", positive: false },
+    { key: "COMP2", text: "Feel others’ emotions.", positive: true },
+    { key: "COMP3", text: "Inquire about others’ well-being.", positive: true },
+    { key: "COMP4", text: "Can’t be bothered with other’s needs.", positive: false },
+    { key: "COMP5", text: "Sympathize with others’ feelings.", positive: true },
+    { key: "COMP6", text: "Am indifferent to the feelings of others.", positive: false },
+    { key: "COMP7", text: "Take no time for others.", positive: false },
+    { key: "COMP8", text: "Take an interest in other people’s lives.", positive: true },
+    { key: "COMP9", text: "Don’t have a soft side.", positive: false },
+    { key: "COMP10", text: "Like to do things for others.", positive: true },
 
     // Politeness
-    { key: "POL1", text: "Respect authority.", positive: true, loading: 0.33 },
-    { key: "POL2", text: "Insult people.", positive: false, loading: -0.58 },
-    { key: "POL3", text: "Hate to seem pushy.", positive: true, loading: 0.42 },
-    { key: "POL4", text: "Believe that I am better than others.", positive: false, loading: -0.51 },
-    { key: "POL5", text: "Avoid imposing my will on others.", positive: true, loading: 0.55 },
-    { key: "POL6", text: "Rarely put people under pressure.", positive: true, loading: 0.46 },
-    { key: "POL7", text: "Take advantage of others.", positive: false, loading: -0.49 },
-    { key: "POL8", text: "Seek conflict.", positive: false, loading: -0.52 },
-    { key: "POL9", text: "Love a good fight.", positive: false, loading: -0.54 },
-    { key: "POL10", text: "Am out for my own personal gain.", positive: false, loading: -0.50 },
+    { key: "POL1", text: "Respect authority.", positive: true },
+    { key: "POL2", text: "Insult people.", positive: false },
+    { key: "POL3", text: "Hate to seem pushy.", positive: true },
+    { key: "POL4", text: "Believe that I am better than others.", positive: false },
+    { key: "POL5", text: "Avoid imposing my will on others.", positive: true },
+    { key: "POL6", text: "Rarely put people under pressure.", positive: true },
+    { key: "POL7", text: "Take advantage of others.", positive: false },
+    { key: "POL8", text: "Seek conflict.", positive: false },
+    { key: "POL9", text: "Love a good fight.", positive: false },
+    { key: "POL10", text: "Am out for my own personal gain.", positive: false },
 ];
 
 let responses = {};
 let currentQuestionIndex = 0;
 
-// Handles answer selection and stores responses
+// Answer selection and response recording
 function selectAnswer(value) {
     const question = questions[currentQuestionIndex];
-
-    // Reverse score if negative (R-coded) item
-    responses[question.key] = question.positive ? value : (6 - value);
+    responses[question.key] = question.positive ? value : (6 - value); // Reverse score if negative
 
     if (currentQuestionIndex < questions.length - 1) {
         currentQuestionIndex++;
@@ -42,35 +40,35 @@ function selectAnswer(value) {
     }
 }
 
-// Updates the displayed question and progress
+// Update question text and progress dynamically
 function updateQuestion() {
     document.getElementById("question-text").innerText = questions[currentQuestionIndex].text;
     document.getElementById("current-question").innerText = currentQuestionIndex + 1;
     document.getElementById("total-questions").innerText = questions.length;
 }
 
-// Calculates properly normalized scores using factor loadings
+// Calculate averages and send scores to results.html
 function submitResults() {
-    const compResults = questions.filter(q => q.key.startsWith("COMP"));
-    const polResults = questions.filter(q => q.key.startsWith("POL"));
+    const compScores = Object.keys(responses)
+        .filter(k => k.startsWith("COMP"))
+        .map(k => responses[k]);
 
-    const compScore = normalizedScore(compResults);
-    const polScore = normalizedScore(polResults);
+    const polScores = Object.keys(responses)
+        .filter(k => k.startsWith("POL"))
+        .map(k => responses[k]);
+
+    const compScore = average(compScores);
+    const polScore = average(polScores);
 
     window.location.href = `a-results.html?comp=${compScore}&pol=${polScore}`;
 }
 
-// Computes the correctly normalized weighted score
-function normalizedScore(items) {
-    if (items.length === 0) return "N/A";
-
-    const sumWeightedScores = items.reduce((sum, q) => sum + (responses[q.key] * q.loading), 0);
-    const sumLoadings = items.reduce((sum, q) => sum + Math.abs(q.loading), 0);
-
-    return (sumWeightedScores / sumLoadings).toFixed(2);
+// Calculate average of array
+function average(arr) {
+    return (arr.reduce((sum, val) => sum + val, 0) / arr.length).toFixed(2);
 }
 
-// Displays the results on the results page
+// Display results on results.html
 function displayResults() {
     const params = new URLSearchParams(window.location.search);
     const compScore = params.get("comp") || "N/A";
@@ -80,7 +78,7 @@ function displayResults() {
     document.getElementById("politeness-score").innerText = polScore;
 }
 
-// Auto-update question or results based on the page
+// Automatically update questions or results based on page
 if (window.location.pathname.includes("a-results.html")) {
     window.onload = displayResults;
 } else if (window.location.pathname.includes("test_A.html")) {
